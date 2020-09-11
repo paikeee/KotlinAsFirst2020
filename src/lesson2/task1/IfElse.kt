@@ -69,11 +69,11 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
 fun ageDescription(age: Int): String {
-fun mod(m: Int): Int = m % 10
-if ((5 <= mod(age)) || (mod(age) == 0)) return ("$age лет")
-else if ((age in 11..14) || (age in 111..114)) return ("$age лет")
-    else if (mod(age) == 1) return ("$age год")
-    else return ("$age года")
+    fun mod(m: Int): Int = m % 10
+    if ((5 <= mod(age)) || (mod(age) == 0)) return "$age лет"
+    else if ((age in 11..14) || (age in 111..114)) return "$age лет"
+    else if (mod(age) == 1) return "$age год"
+    else return "$age года"
 }
 
 
@@ -93,9 +93,9 @@ fun timeForHalfWay(
     val s2 = t2 * v2
     val s3 = t3 * v3
     val half = (s1 + s2 + s3) / 2
-    if (s1 > half) return (half / v1)
-    else if (s2 > half - s1) return ((half - s1) / v2 + t1)
-    else return ((half - s1 - s2) / v3 + t1 + t2)
+    if (s1 > half) return half / v1
+    else if (s2 > half - s1) return (half - s1) / v2 + t1
+    else return (half - s1 - s2) / v3 + t1 + t2
 }
 
 /**
@@ -112,13 +112,9 @@ fun whichRookThreatens(
     rookX1: Int, rookY1: Int,
     rookX2: Int, rookY2: Int
 ): Int {
-    if (((kingX == rookX1) && (kingX == rookX2))
-        || ((kingX == rookX1) && (kingY == rookY2))
-        || ((kingY == rookY1) && (kingX == rookX2))
-        || ((kingY == rookY1) && (kingY == rookY2))) return (3)
-    else if ((kingX == rookX1) || (kingY == rookY1)) return (1)
-    else if ((kingX == rookX2) || (kingY == rookY2)) return (2)
-    else return (0)
+    if (kingX == rookX1 || kingY == rookY1) {
+        if (kingX == rookX2 || kingY == rookY2) return 3 else return 1
+    } else if (kingX == rookX2 || kingY == rookY2) return 2 else return 0
 }
 
 /**
@@ -138,15 +134,9 @@ fun rookOrBishopThreatens(
 ): Int {
     val y = kingY - bishopY
     val x = kingX - bishopX
-    if (x != y) {
-        if (((x * (-1) == y) && (rookX == kingX)) || ((x * (-1) == y) && (rookY == kingY))) return (3)
-        else if (x * (-1) == y) return (2)
-        else if ((rookX == kingX) || (rookY == kingY)) return (1)
-        else return (0)
-    } else if (((x == y) && (rookX == kingX)) || ((x == y) && (rookY == kingY))) return (3)
-    else if (x == y) return (2)
-    else if ((rookX == kingX) || (rookY == kingY)) return (1)
-    else return (0)
+    if (-x == y || x == y) {
+        if (rookX == kingX || rookY == kingY) return 3 else return 2
+    } else if (rookX == kingX || rookY == kingY) return 1 else return 0
 }
 
 /**
@@ -177,9 +167,17 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Если пересечения нет, вернуть -1.
  */
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
-    if ((a <= c) && (c <= b) && (d >= b)) return (b - c)
-    else if ((c <= a) && (b <= d)) return (b - a)
-    else if ((c <= a) && (b >= d) && (d >= a)) return (d - a)
-    else if ((a <= c) && (d <= b)) return (d - c)
-    else return (-1)
+    when {
+        ((a <= c) && (c <= b) && (d >= b)) -> return b - c
+    }
+    when {
+        ((c <= a) && (b <= d)) -> return b - a
+    }
+    when {
+        ((c <= a) && (b >= d) && (d >= a)) -> return d - a
+    }
+    when {
+        ((a <= c) && (d <= b)) -> return d - c
+    }
+    return (-1)
 }
