@@ -72,7 +72,16 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun digitNumber(n: Int): Int = TODO()
+fun digitNumber(n: Int): Int {
+    var result = 0
+    var n1 = n
+    if (n == 0) return 1
+    while (n1 > 0) {
+        result++
+        n1 /= 10
+    }
+    return result
+}
 
 /**
  * Простая (2 балла)
@@ -80,22 +89,53 @@ fun digitNumber(n: Int): Int = TODO()
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
-fun fib(n: Int): Int = TODO()
+fun fib(n: Int): Int {
+    var fib1 = 1
+    var fib2 = 1
+    var result = 0
+    if (n <= 2) return 1
+    else for (i in 3..n) {
+        result = fib1 + fib2
+        fib1 = fib2
+        fib2 = result
+    }
+    return result
+}
+/*
+ var fib1 = 1
+ var fib2 = 1
+ if (n < 3) return 1
+ else return fib(n-1) + fib(n-2) } */
 
 /**
  * Простая (2 балла)
  *
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
-fun minDivisor(n: Int): Int = TODO()
+fun minDivisor(n: Int): Int {
+    var result = 3
+    if (n % 2 == 0) return 2
+    else for (i in 3..sqrt(n.toDouble()).toInt() step 2) {
+        if (n % i == 0) return result
+        result += 2
+    }
+    return n
+}
 
 /**
  * Простая (2 балла)
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int = TODO()
-
+fun maxDivisor(n: Int): Int {
+    var result = 3
+    if (n % 2 == 0) return n / 2
+    else for (i in 3..sqrt(n.toDouble()).toInt() step 2) {
+        if (n % i == 0) return n / result
+        result += 2
+    }
+    return 1
+}
 /**
  * Простая (2 балла)
  *
@@ -112,7 +152,10 @@ fun maxDivisor(n: Int): Int = TODO()
  * Написать функцию, которая находит, сколько шагов требуется для
  * этого для какого-либо начального X > 0.
  */
-fun collatzSteps(x: Int): Int = TODO()
+fun collatzSteps(x: Int): Int {
+    var result = 1
+
+}
 
 /**
  * Средняя (3 балла)
@@ -213,3 +256,4 @@ fun squareSequenceDigit(n: Int): Int = TODO()
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun fibSequenceDigit(n: Int): Int = TODO()
+
