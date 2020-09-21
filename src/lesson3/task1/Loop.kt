@@ -101,11 +101,6 @@ fun fib(n: Int): Int {
     }
     return result
 }
-/*
- var fib1 = 1
- var fib2 = 1
- if (n < 3) return 1
- else return fib(n-1) + fib(n-2) } */
 
 /**
  * Простая (2 балла)
@@ -136,6 +131,7 @@ fun maxDivisor(n: Int): Int {
     }
     return 1
 }
+
 /**
  * Простая (2 балла)
  *
@@ -152,10 +148,13 @@ fun maxDivisor(n: Int): Int {
  * Написать функцию, которая находит, сколько шагов требуется для
  * этого для какого-либо начального X > 0.
  */
-fun collatzSteps(x: Int): Int {
-    var result = 1
+fun collatzSteps(x: Int): Int = TODO()
+/*{
+    var step = 0
+    while (x > 1) {
 
-}
+    }
+}*/
 
 /**
  * Средняя (3 балла)
@@ -163,7 +162,12 @@ fun collatzSteps(x: Int): Int {
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
-fun lcm(m: Int, n: Int): Int = TODO()
+fun lcm(m: Int, n: Int): Int {
+    var m1 = m
+    var n1 = n
+    while (m1 != n1) if (m1 > n1) m1 -= n1 else n1 -= m1
+    return (m / m1 * n)
+}
 
 /**
  * Средняя (3 балла)
@@ -172,7 +176,12 @@ fun lcm(m: Int, n: Int): Int = TODO()
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean = TODO()
+fun isCoPrime(m: Int, n: Int): Boolean {
+    var m1 = m
+    var n1 = n
+    while (m1 != n1) if (m1 > n1) m1 -= n1 else n1 -= m1
+    if (m1 == 1) return true else return false
+}
 
 /**
  * Средняя (3 балла)
@@ -181,7 +190,10 @@ fun isCoPrime(m: Int, n: Int): Boolean = TODO()
  * то есть, существует ли такое целое k, что m <= k*k <= n.
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
-fun squareBetweenExists(m: Int, n: Int): Boolean = TODO()
+fun squareBetweenExists(m: Int, n: Int): Boolean {
+    for (i in m..n) if (i == sqrt(i.toDouble()).toInt() * sqrt(i.toDouble()).toInt()) return true
+    return false
+}
 
 /**
  * Средняя (3 балла)
@@ -190,7 +202,15 @@ fun squareBetweenExists(m: Int, n: Int): Boolean = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun revert(n: Int): Int = TODO()
+fun revert(n: Int): Int {
+    var result = 0
+    var n1 = n
+    while (n1 > 0) {
+        result = result * 10 + n1 % 10
+        n1 /= 10
+    }
+    return result
+}
 
 /**
  * Средняя (3 балла)
@@ -201,8 +221,15 @@ fun revert(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean = TODO()
-
+fun isPalindrome(n: Int): Boolean {
+    var result = 0
+    var n1 = n
+    while (n1 > 0) {
+        result = result * 10 + n1 % 10
+        n1 /= 10
+    }
+    if (result == n) return true else return false
+}
 /**
  * Средняя (3 балла)
  *
@@ -211,7 +238,15 @@ fun isPalindrome(n: Int): Boolean = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun hasDifferentDigits(n: Int): Boolean = TODO()
+fun hasDifferentDigits(n: Int): Boolean {
+    val number = n % 10
+    var n1 = n / 10
+    while (n1 > 0) {
+        if (n1 % 10 != number) return true
+        n1 /= 10
+    }
+    return false
+}
 
 /**
  * Средняя (4 балла)
