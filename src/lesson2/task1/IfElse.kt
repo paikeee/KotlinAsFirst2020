@@ -112,10 +112,10 @@ fun whichRookThreatens(
     rookX1: Int, rookY1: Int,
     rookX2: Int, rookY2: Int
 ): Int {
-
-    if (kingX == rookX1 || kingY == rookY1) {
-        if (kingX == rookX2 || kingY == rookY2) return 3 else return 1
-    } else if (kingX == rookX2 || kingY == rookY2) return 2 else return 0
+    var threat = 0
+    if (kingX == rookX1 || kingY == rookY1) threat += 1
+    if (kingX == rookX2 || kingY == rookY2) threat += 2
+    return threat
 }
 
 /**
