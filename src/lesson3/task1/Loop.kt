@@ -149,12 +149,6 @@ fun maxDivisor(n: Int): Int {
  * этого для какого-либо начального X > 0.
  */
 fun collatzSteps(x: Int): Int = TODO()
-/*{
-    var step = 0
-    while (x > 1) {
-
-    }
-}*/
 
 /**
  * Средняя (3 балла)
