@@ -2,6 +2,7 @@
 
 package lesson3.task1
 
+import kotlin.math.abs
 import kotlin.math.sqrt
 
 // Урок 3: циклы
@@ -148,7 +149,15 @@ fun maxDivisor(n: Int): Int {
  * Написать функцию, которая находит, сколько шагов требуется для
  * этого для какого-либо начального X > 0.
  */
-fun collatzSteps(x: Int): Int = TODO()
+fun collatzSteps(x: Int): Int {
+    var step = 0
+    var x1 = x
+    while (x1 != 1) {
+        step++
+        if (x1 % 2 == 0) x1 /= 2 else x1 = x1 * 3 + 1
+    }
+    return (step)
+}
 
 /**
  * Средняя (3 балла)
@@ -251,8 +260,14 @@ fun hasDifferentDigits(n: Int): Boolean {
  * Подумайте, как добиться более быстрой сходимости ряда при больших значениях x.
  * Использовать kotlin.math.sin и другие стандартные реализации функции синуса в этой задаче запрещается.
  */
-fun sin(x: Double, eps: Double): Double = TODO()
+fun sin(x: Double, eps: Double): Double = TODO() /*{
+    var step = x
+    var sin = x
+    while (abs(step) >= eps) {
 
+    }
+}
+fun factorial(a: Int): Int = for (i in 1..a) */
 /**
  * Средняя (4 балла)
  *
