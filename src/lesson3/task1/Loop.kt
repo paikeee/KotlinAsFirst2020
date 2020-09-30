@@ -2,6 +2,7 @@
 
 package lesson3.task1
 
+import lesson1.task1.sqr
 import kotlin.math.abs
 import kotlin.math.sqrt
 
@@ -77,7 +78,7 @@ fun digitNumber(n: Int): Int {
     var result = 0
     var n1 = n
     if (n == 0) return 1
-    while (n1 > 0) {
+    while (n1 != 0) {
         result++
         n1 /= 10
     }
@@ -183,7 +184,7 @@ fun isCoPrime(m: Int, n: Int): Boolean {
     var m1 = m
     var n1 = n
     while (m1 != n1) if (m1 > n1) m1 -= n1 else n1 -= m1
-    if (m1 == 1) return true else return false
+    if (m1 == 1) return true else return (false)
 }
 
 /**
@@ -194,7 +195,7 @@ fun isCoPrime(m: Int, n: Int): Boolean {
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
-    for (i in m..n) if (i == sqrt(i.toDouble()).toInt() * sqrt(i.toDouble()).toInt()) return true
+    for (i in m..n) if (i == sqr(sqrt(i.toDouble()).toInt())) return true
     return false
 }
 
@@ -231,7 +232,7 @@ fun isPalindrome(n: Int): Boolean {
         result = result * 10 + n1 % 10
         n1 /= 10
     }
-    if (result == n) return true else return false
+    if (result == n) return true else return (false)
 }
 /**
  * Средняя (3 балла)
@@ -260,14 +261,20 @@ fun hasDifferentDigits(n: Int): Boolean {
  * Подумайте, как добиться более быстрой сходимости ряда при больших значениях x.
  * Использовать kotlin.math.sin и другие стандартные реализации функции синуса в этой задаче запрещается.
  */
-fun sin(x: Double, eps: Double): Double = TODO() /*{
+fun sin(x: Double, eps: Double): Double = TODO()/*{
     var step = x
     var sin = x
     while (abs(step) >= eps) {
 
     }
 }
-fun factorial(a: Int): Int = for (i in 1..a) */
+fun factoriall(n: Int): Double {
+    var result = 1.0
+    for (i in 1..n) {
+        result *= i
+    }
+    return result
+}*/
 /**
  * Средняя (4 балла)
  *
@@ -288,7 +295,13 @@ fun cos(x: Double, eps: Double): Double = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
+fun squareSequenceDigit(n: Int): Int = TODO() /*{
+    var line = 0
+    var number = 1
+    while (n > 0) {
+        line += number
+    }
+}*/
 
 /**
  * Сложная (5 баллов)

@@ -93,9 +93,11 @@ fun timeForHalfWay(
     val s2 = t2 * v2
     val s3 = t3 * v3
     val half = (s1 + s2 + s3) / 2
-    if (s1 > half) return half / v1
-    else if (s2 > half - s1) return (half - s1) / v2 + t1
-    else return (half - s1 - s2) / v3 + t1 + t2
+    return when {
+        s1 > half -> half / v1
+        s2 > half - s1 -> (half - s1) / v2 + t1
+        else -> (half - s1 - s2) / v3 + t1 + t2
+    }
 }
 
 /**
@@ -135,9 +137,10 @@ fun rookOrBishopThreatens(
 ): Int {
     val y = kingY - bishopY
     val x = kingX - bishopX
-    if (-x == y || x == y) {
-        if (rookX == kingX || rookY == kingY) return 3 else return 2
-    } else if (rookX == kingX || rookY == kingY) return 1 else return 0
+    var threat = 0
+    if (-x == y || x == y) threat += 2
+    if (rookX == kingX || rookY == kingY) threat++
+    return threat
 }
 
 /**
@@ -153,10 +156,12 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
     val cosA = (sqr(a) - sqr(b) - sqr(c)) / (-2 * b * c)
     val cosB = (sqr(b) - sqr(a) - sqr(c)) / (-2 * a * c)
     val cosC = (sqr(c) - sqr(a) - sqr(b)) / (-2 * b * a)
-    if ((cosA >= 1) || (cosB >= 1) || (cosC >= 1) || (cosA <= -1) || (cosB <= -1) || (cosC <= -1)) return (-1)
-    else if ((cosA > 0) && (cosB > 0) && (cosC > 0)) return (0)
-    else if ((cosA == 0.0) || (cosB == 0.0) || (cosC == 0.0)) return (1)
-    else return (2)
+    return when {
+        cosA >= 1 || cosB >= 1 || cosC >= 1 || cosA <= -1 || cosB <= -1 || cosC <= -1 -> -1
+        cosA > 0 && cosB > 0 && cosC > 0 -> 0
+        cosA == 0.0 || cosB == 0.0 || cosC == 0.0 -> 1
+        else -> 2
+    }
 }
 
 /**
