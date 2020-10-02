@@ -261,20 +261,8 @@ fun hasDifferentDigits(n: Int): Boolean {
  * Подумайте, как добиться более быстрой сходимости ряда при больших значениях x.
  * Использовать kotlin.math.sin и другие стандартные реализации функции синуса в этой задаче запрещается.
  */
-fun sin(x: Double, eps: Double): Double = TODO()/*{
-    var step = x
-    var sin = x
-    while (abs(step) >= eps) {
+fun sin(x: Double, eps: Double): Double = TODO()
 
-    }
-}
-fun factoriall(n: Int): Double {
-    var result = 1.0
-    for (i in 1..n) {
-        result *= i
-    }
-    return result
-}*/
 /**
  * Средняя (4 балла)
  *
@@ -295,13 +283,22 @@ fun cos(x: Double, eps: Double): Double = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int = TODO() /*{
-    var line = 0
+fun squareSequenceDigit(n: Int): Int {
     var number = 1
-    while (n > 0) {
-        line += number
+    var line = 0
+    while (line < n) {
+        line += digitNumber(sqr(number))
+        number++
     }
-}*/
+    number--
+    var check = line - n
+    var ten = 10 // степень 10
+    while (check > 0) {
+        ten *= 10
+        check--
+    }
+    return (sqr(number) % ten / (ten / 10))
+}
 
 /**
  * Сложная (5 баллов)
@@ -312,5 +309,20 @@ fun squareSequenceDigit(n: Int): Int = TODO() /*{
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+fun fibSequenceDigit(n: Int): Int {
+    var number = 1
+    var line = 0
+    while (line < n) {
+        line += digitNumber(fib(number))
+        number++
+    }
+    val number1 = fib(number - 1)
+    var check = line - n
+    var ten = 10 // степень 10
+    while (check > 0) {
+        ten *= 10
+        check--
+    }
+    return (number1 % ten / (ten / 10))
+}
 
