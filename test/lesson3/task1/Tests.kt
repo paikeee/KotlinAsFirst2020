@@ -71,6 +71,8 @@ class Tests {
         assertEquals(2, digitNumber(99))
         assertEquals(3, digitNumber(123))
         assertEquals(10, digitNumber(Int.MAX_VALUE))
+        assertEquals(1, digitNumber(-2))
+        assertEquals(3, digitNumber(-222))
     }
 
     @Test
@@ -230,6 +232,7 @@ class Tests {
     @Test
     @Tag("4")
     fun squareSequenceDigit() {
+        assertEquals(1, squareSequenceDigit(383721))
         assertEquals(1, squareSequenceDigit(1))
         assertEquals(4, squareSequenceDigit(2))
         assertEquals(5, squareSequenceDigit(7))

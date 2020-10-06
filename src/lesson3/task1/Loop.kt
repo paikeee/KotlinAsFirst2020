@@ -184,7 +184,8 @@ fun isCoPrime(m: Int, n: Int): Boolean {
     var m1 = m
     var n1 = n
     while (m1 != n1) if (m1 > n1) m1 -= n1 else n1 -= m1
-    if (m1 == 1) return true else return (false)
+    if (m1 == 1) return true
+    return false
 }
 
 /**
@@ -232,7 +233,8 @@ fun isPalindrome(n: Int): Boolean {
         result = result * 10 + n1 % 10
         n1 /= 10
     }
-    if (result == n) return true else return (false)
+    if (result == n) return true
+    return false
 }
 /**
  * Средняя (3 балла)
@@ -292,12 +294,13 @@ fun squareSequenceDigit(n: Int): Int {
     }
     number--
     var check = line - n
-    var ten = 10 // степень 10
+    var ten = 1 // степень 10
+    var ten1 = 1
     while (check > 0) {
-        ten *= 10
+        if (ten < 1000000000) ten *= 10 else ten1 *= 10
         check--
     }
-    return (sqr(number) % ten / (ten / 10))
+    return (sqr(number) / (ten * ten1) % 10)
 }
 
 /**
