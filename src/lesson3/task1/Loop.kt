@@ -3,7 +3,6 @@
 package lesson3.task1
 
 import lesson1.task1.sqr
-import kotlin.math.abs
 import kotlin.math.sqrt
 
 // Урок 3: циклы
@@ -184,7 +183,7 @@ fun isCoPrime(m: Int, n: Int): Boolean {
     var m1 = m
     var n1 = n
     while (m1 != n1) if (m1 > n1) m1 -= n1 else n1 -= m1
-    return (m1 == 1) == true
+    return (m1 == 1)
 }
 
 /**
@@ -232,7 +231,7 @@ fun isPalindrome(n: Int): Boolean {
         result = result * 10 + n1 % 10
         n1 /= 10
     }
-    return (result == n) == true
+    return (result == n)
 }
 /**
  * Средняя (3 балла)
