@@ -316,7 +316,7 @@ fun convertToString(n: Int, base: Int): String {
     }
     var result = ""
     var n1 = n
-    while (n1 > base) {
+    while (n1 >= base) {
         if (n1 % base > 9) result += symbols[n1 % base - 10]
         else result += n1 % base
         n1 /= base
@@ -551,6 +551,20 @@ fun digitthird(number: Int): List<String> {
     if (number == 1) result.add("сто")
     return result
 }
+fun digitforth(number: Int): List<String> {
+    val result = arrayListOf<String>()
+    if (number == 9) result.add("девять тысяч")
+    if (number == 8) result.add("восемь тысяч")
+    if (number == 7) result.add("семь тысяч")
+    if (number == 6) result.add("шесть тысяч")
+    if (number == 5) result.add("пять тысяч")
+    if (number == 4) result.add("четыре тысячи")
+    if (number == 3) result.add("три тысячи")
+    if (number == 2) result.add("две тысячи")
+    if (number == 1) result.add("одна тысяча")
+    if (number == 0) result.add("тысяч")
+    return result
+}
 
 fun russian(n: Int): String {
     val result = arrayListOf<String>() // перевернутый результат
@@ -569,14 +583,7 @@ fun russian(n: Int): String {
             (count == 1 && n1 % 10 != 0) -> result += digitfirst(n1 % 10)
             (count == 2 && n1 % 10 != 0) -> result += digitsecond(n1 % 10)
             (count == 3 && n1 % 10 != 0) -> result += digitthird(n1 % 10)
-            (count == 4) -> when {
-                (n1 % 10 in 5..9) -> result += "тысяч" + digitfirst(n1 % 10)
-                (n1 % 10 in 3..4) -> result += "тысячи" + digitfirst(n1 % 10)
-                (n1 % 10 == 0) -> result.add("тысяч")
-                (n1 % 10 == 1) -> result.add("одна тысяча")
-                (n1 % 10 == 2) -> result.add("две тысячи")
-
-            }
+            (count == 4) -> result += digitforth(n1 % 10)
             (count == 5 && n1 % 10 != 0) -> result += digitsecond(n1 % 10)
             (count == 6 && n1 % 10 != 0) -> result += digitthird(n1 % 10)
         }
