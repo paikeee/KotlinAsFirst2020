@@ -302,6 +302,7 @@ fun convertToString(n: Int, base: Int): String {
     for (i in result.length - 1 downTo 0) {
         result1 += result[i]
     }
+    if (result1.isEmpty()) result1 += "0"
     return result1
 }
 
