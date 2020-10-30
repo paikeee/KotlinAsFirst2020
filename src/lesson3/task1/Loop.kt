@@ -313,13 +313,10 @@ fun fibSequenceDigit(n: Int): Int {
         line += digitNumber(fib(number))
         number++
     }
-    val number1 = fib(number - 1)
-    var check = line - n
-    var ten = 10 // степень 10
-    while (check > 0) {
-        ten *= 10
-        check--
+    var number1 = fib(number - 1)
+    for (i in 1..(line - n)) {
+        number1 /= 10
     }
-    return (number1 % ten / (ten / 10))
+    return (number1 % 10)
 }
 
