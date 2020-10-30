@@ -5,7 +5,7 @@ package lesson4.task1
 import lesson1.task1.discriminant
 import lesson1.task1.sqr
 import kotlin.math.sqrt
-import kotlin.math.pow
+
 
 // Урок 4: списки
 // Максимальное количество баллов = 12
@@ -185,11 +185,14 @@ fun times(a: List<Int>, b: List<Int>): Int {
  */
 fun polynom(p: List<Int>, x: Int): Int {
     var result = 0
+    var grade = 1
     for (i in p.indices) {
-        result += p[i] * (x.toDouble().pow(i)).toInt()
+        result += p[i] * grade
+        grade *= x
     }
     return result
 }
+
 
 /**
  * Средняя (3 балла)
@@ -202,13 +205,7 @@ fun polynom(p: List<Int>, x: Int): Int {
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun accumulate(list: MutableList<Int>): MutableList<Int> {
-    for (i in (list.size - 1) downTo 0) {
-        var a = i
-        while (a != 0) {
-            list[i] += list[a - 1]
-            a--
-        }
-    }
+    for (i in 1 until list.size) list[i] += list[i - 1]
     return list
 }
 
@@ -222,25 +219,17 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> {
 fun factorize(n: Int): List<Int> {
     val result = mutableListOf<Int>()
     var n1 = n
-    while (n1 % 2 == 0) {
-        n1 /= 2
-        result.add(2)
-    }
-    var k = 1
+    var k = 2
     while (n1 > 1) {
-        if (k == 0) break
-        k = 0
-        for (i in 3..sqrt(n1.toDouble()).toInt() step 2) {
-            if (n1 % i == 0) {
-                n1 /= i
-                result.add(i)
-                k++
-            }
-            if (k == 1) break
+        while (n1 % k == 0) {
+            result.add(k)
+            n1 /= k
         }
+        k++
+        if (k > sqrt(n1.toDouble()).toInt()) break
     }
-    if (n1 > 1) result.add(n1)
-    return result.sorted()
+    return if (n1 > 1) result + n1
+    else return result
 }
 
 /**
@@ -253,25 +242,17 @@ fun factorize(n: Int): List<Int> {
 fun factorizeToString(n: Int): String {
     var result = ""
     var n1 = n
-    while (n1 % 2 == 0) {
-        n1 /= 2
-        result = result + 2 + "*"
-    }
-    var k = 1
+    var k = 2
     while (n1 > 1) {
-        if (k == 0) break
-        k = 0
-        for (i in 3..sqrt(n1.toDouble()).toInt() step 2) {
-            if (n1 % i == 0) {
-                n1 /= i
-                result = "$result$i*"
-                k++
-            }
-            if (k == 1) break
+        while (n1 % k == 0) {
+            result = "$result$k*"
+            n1 /= k
         }
+        k++
+        if (k > sqrt(n1.toDouble()).toInt()) break
     }
     return if (n1 > 1) result + n1
-    else result.substring(0, result.length - 1)
+    else return result.substring(0, result.length - 1)
 }
 
 /**
@@ -289,9 +270,8 @@ fun convert(n: Int, base: Int): List<Int> {
         n1 /= base
     }
     result.add(n1)
-    var k: Int
     for (i in 0..((result.size - 1) / 2)) {
-        k = result[i]
+        val k: Int = result[i]
         result[i] = result[result.size - 1 - i]
         result[result.size - 1 - i] = k
     }
@@ -310,19 +290,14 @@ fun convert(n: Int, base: Int): List<Int> {
  * (например, n.toString(base) и подобные), запрещается.
  */
 fun convertToString(n: Int, base: Int): String {
-    val symbols = mutableListOf<Char>()
-    for (i in 'a'..'z') {
-        symbols.add(i)
-    }
     var result = ""
     var n1 = n
-    while (n1 >= base) {
-        if (n1 % base > 9) result += symbols[n1 % base - 10]
+    while (n1 > 0) {
+        if (n1 % base > 9)
+            result += (n1 % base + 87).toChar()
         else result += n1 % base
         n1 /= base
     }
-    if (n1 > 9) result += symbols[n1 % base - 10]
-    else result += n1
     var result1 = ""
     for (i in result.length - 1 downTo 0) {
         result1 += result[i]
@@ -339,11 +314,11 @@ fun convertToString(n: Int, base: Int): String {
  * Например: digits = (1, 3, 12), base = 14 -> 250
  */
 fun decimal(digits: List<Int>, base: Int): Int {
-    var k = digits.size - 1
+    var grade = 1
     var result = 0
-    for (i in digits.indices) {
-        result += digits[i] * ((base.toDouble()).pow(k)).toInt()
-        k--
+    for (i in digits.size - 1 downTo 0) {
+        result += digits[i] * grade
+        grade *= base
     }
     return result
 }
@@ -361,27 +336,19 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * (например, str.toInt(base)), запрещается.
  */
 fun decimalFromString(str: String, base: Int): Int {
-    val symbols = mutableListOf<Char>()
-    for (i in 'a'..'z') {
-        symbols.add(i)
-    }
-    val numbers = mutableListOf<Char>()
-    for (i in '0'..'9') {
-        numbers.add(i)
-    }
-    var k = str.length - 1 // степень числа
     var result = 0
+    var grade = 1
     var number = 0 // разряд числа в системе base
-    for (i in str.indices) {
+    for (i in str.length - 1 downTo 0) {
         if (str[i] <= '9')
             for (j in '0'..'9') {
-                if (str[i] == j) number = numbers.indexOf(j)
+                if (str[i] == j) number = j.toInt() - 48
             } else
             for (j in 'a'..'z') {
-                if (str[i] == j) number = symbols.indexOf(j) + 10
+                if (str[i] == j) number = j.toInt() - 87
             }
-        result += number * ((base.toDouble()).pow(k)).toInt()
-        k--
+        result += number * grade
+        grade *= base
     }
     return result
 }
@@ -395,75 +362,25 @@ fun decimalFromString(str: String, base: Int): Int {
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
 
-fun firstdigit(n: Int): List<Char> {
+fun digit(n: Int, list: List<Char>): List<Char> {
     val result = mutableListOf<Char>()
     var number = n
     if (number == 9) {
-        result.add('X')
-        result.add('I')
+        result.add(list[2])
+        result.add(list[0])
     }
     if (number in 6..8) {
         number++
         while (number >= 7) {
-            result.add('I')
+            result.add(list[0])
             number--
         }
     }
-    if (number in 4..6) result.add('V')
-    if (number == 4) result.add('I')
+    if (number in 4..6) result.add(list[1])
+    if (number == 4) result.add(list[0])
     if (number in 1..3) {
         while (number >= 1) {
-            result.add('I')
-            number--
-        }
-    }
-    return result
-}
-
-fun thirddigit(n: Int): List<Char> {
-    val result = mutableListOf<Char>()
-    var number = n
-    if (number == 9) {
-        result.add('M')
-        result.add('C')
-    }
-    if (number in 6..8) {
-        number++
-        while (number >= 7) {
-            result.add('C')
-            number--
-        }
-    }
-    if (number in 4..6) result.add('D')
-    if (number == 4) result.add('C')
-    if (number in 1..3) {
-        while (number >= 1) {
-            result.add('C')
-            number--
-        }
-    }
-    return result
-}
-
-fun seconddigit(n: Int): List<Char> {
-    val result = mutableListOf<Char>()
-    var number = n
-    if (number == 9) {
-        result.add('C')
-        result.add('X')
-    }
-    if (number in 6..8) {
-        number++
-        while (number >= 7) {
-            result.add('X')
-            number--
-        }
-    }
-    if (number in 4..6) result.add('L')
-    if (number == 4) result.add('X')
-    if (number in 1..3) {
-        while (number >= 1) {
-            result.add('X')
+            result.add(list[0])
             number--
         }
     }
@@ -478,9 +395,9 @@ fun roman(n: Int): String {
     while (n1 > 0) {
         count++
         when {
-            (count == 1 && n1 % 10 != 0) -> result += firstdigit(n1 % 10)
-            (count == 2 && n1 % 10 != 0) -> result += seconddigit(n1 % 10)
-            (count == 3 && n1 % 10 != 0) -> result += thirddigit(n1 % 10)
+            (count == 1 && n1 % 10 != 0) -> result += digit(n1 % 10, listOf('I', 'V', 'X'))
+            (count == 2 && n1 % 10 != 0) -> result += digit(n1 % 10, listOf('X', 'L', 'C'))
+            (count == 3 && n1 % 10 != 0) -> result += digit(n1 % 10, listOf('C', 'D', 'M'))
             (count == 4) -> for (i in 1..n1 % 10) result.add('M')
         }
         n1 /= 10
@@ -498,73 +415,7 @@ fun roman(n: Int): String {
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun digitfirst(number: Int): List<String> {
-    val result = arrayListOf<String>()
-    if (number == 9) result.add("девять")
-    if (number == 8) result.add("восемь")
-    if (number == 7) result.add("семь")
-    if (number == 6) result.add("шесть")
-    if (number == 5) result.add("пять")
-    if (number == 4) result.add("четыре")
-    if (number == 3) result.add("три")
-    if (number == 2) result.add("два")
-    if (number == 1) result.add("один")
-    return result
-}
-
-fun tenTonineteen(number: Int): List<String> {
-    val result = arrayListOf<String>()
-    if (number == 19) result.add("девятнадцать")
-    if (number == 18) result.add("восемнадцать")
-    if (number == 17) result.add("семнадцать")
-    if (number == 16) result.add("шестнадцать")
-    if (number == 15) result.add("пятнадцать")
-    if (number == 14) result.add("четырнадцать")
-    if (number == 13) result.add("тринадцать")
-    if (number == 12) result.add("двенадцать")
-    if (number == 11) result.add("одиннадцать")
-    if (number == 10) result.add("десять")
-    return result
-}
-fun digitsecond(number: Int): List<String> {
-    val result = arrayListOf<String>()
-    if (number == 9) result.add("девяносто")
-    if (number == 8) result.add("восемьдесят")
-    if (number == 7) result.add("семьдесят")
-    if (number == 6) result.add("шестьдесят")
-    if (number == 5) result.add("пятьдесят")
-    if (number == 4) result.add("сорок")
-    if (number == 3) result.add("тридцать")
-    if (number == 2) result.add("двадцать")
-    return result
-}
-fun digitthird(number: Int): List<String> {
-    val result = arrayListOf<String>()
-    if (number == 9) result.add("девятьсот")
-    if (number == 8) result.add("восемьсот")
-    if (number == 7) result.add("семьсот")
-    if (number == 6) result.add("шестьсот")
-    if (number == 5) result.add("пятьсот")
-    if (number == 4) result.add("четыреста")
-    if (number == 3) result.add("триста")
-    if (number == 2) result.add("двести")
-    if (number == 1) result.add("сто")
-    return result
-}
-fun digitforth(number: Int): List<String> {
-    val result = arrayListOf<String>()
-    if (number == 9) result.add("девять тысяч")
-    if (number == 8) result.add("восемь тысяч")
-    if (number == 7) result.add("семь тысяч")
-    if (number == 6) result.add("шесть тысяч")
-    if (number == 5) result.add("пять тысяч")
-    if (number == 4) result.add("четыре тысячи")
-    if (number == 3) result.add("три тысячи")
-    if (number == 2) result.add("две тысячи")
-    if (number == 1) result.add("одна тысяча")
-    if (number == 0) result.add("тысяч")
-    return result
-}
+fun digit1(number: Int, list: List<String>): String = list[number - 1]
 
 fun russian(n: Int): String {
     val result = arrayListOf<String>() // перевернутый результат
@@ -576,16 +427,99 @@ fun russian(n: Int): String {
         when {
             (n1 % 100 in 10..19 && (count == 1 || count == 4)) -> {
                 if (count == 4) result.add("тысяч")
-                result += tenTonineteen(n1 % 100)
+                result += digit1(
+                    n1 % 10 + 1,
+                    listOf(
+                        "десять",
+                        "одиннадцать",
+                        "двенадцать",
+                        "тринадцать",
+                        "четырнадцать",
+                        "пятнадцать",
+                        "шестнадцать",
+                        "семнадцать",
+                        "восемнадцать",
+                        "девятнадцать"
+                    )
+                )
                 count++
                 n1 /= 10
             }
-            (count == 1 && n1 % 10 != 0) -> result += digitfirst(n1 % 10)
-            (count == 2 && n1 % 10 != 0) -> result += digitsecond(n1 % 10)
-            (count == 3 && n1 % 10 != 0) -> result += digitthird(n1 % 10)
-            (count == 4) -> result += digitforth(n1 % 10)
-            (count == 5 && n1 % 10 != 0) -> result += digitsecond(n1 % 10)
-            (count == 6 && n1 % 10 != 0) -> result += digitthird(n1 % 10)
+            (count == 1 && n1 % 10 != 0) -> result += digit1(
+                n1 % 10,
+                listOf("один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
+            )
+            (count == 2 && n1 % 10 != 0) -> result += digit1(
+                n1 % 10,
+                listOf(
+                    "",
+                    "двадцать",
+                    "тридцать",
+                    "сорок",
+                    "пятьдесят",
+                    "шестьдесят",
+                    "семьдесят",
+                    "восемьдесят",
+                    "девяносто"
+                )
+            )
+            (count == 3 && n1 % 10 != 0) -> result += digit1(
+                n1 % 10,
+                listOf(
+                    "сто",
+                    "двести",
+                    "триста",
+                    "четыреста",
+                    "пятьсот",
+                    "шестьсот",
+                    "семьсот",
+                    "восемьсот",
+                    "девятьсот"
+                )
+            )
+            (count == 4) -> result += digit1(
+                n1 % 10 + 1,
+                listOf(
+                    "тысяч",
+                    "одна тысяча",
+                    "две тысячи",
+                    "три тысячи",
+                    "четыре тысячи",
+                    "пять тысяч",
+                    "шесть тысяч",
+                    "семь тысяч",
+                    "восемь тысяч",
+                    "девять тысяч"
+                )
+            )
+            (count == 5 && n1 % 10 != 0) -> result += digit1(
+                n1 % 10,
+                listOf(
+                    "",
+                    "двадцать",
+                    "тридцать",
+                    "сорок",
+                    "пятьдесят",
+                    "шестьдесят",
+                    "семьдесят",
+                    "восемьдесят",
+                    "девяносто"
+                )
+            )
+            (count == 6 && n1 % 10 != 0) -> result += digit1(
+                n1 % 10,
+                listOf(
+                    "сто",
+                    "двести",
+                    "триста",
+                    "четыреста",
+                    "пятьсот",
+                    "шестьсот",
+                    "семьсот",
+                    "восемьсот",
+                    "девятьсот"
+                )
+            )
         }
         n1 /= 10
 
