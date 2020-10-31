@@ -229,7 +229,7 @@ fun factorize(n: Int): List<Int> {
         if (k > sqrt(n1.toDouble()).toInt()) break
     }
     return if (n1 > 1) result + n1
-    else return result
+    else result
 }
 
 /**
@@ -252,7 +252,7 @@ fun factorizeToString(n: Int): String {
         if (k > sqrt(n1.toDouble()).toInt()) break
     }
     return if (n1 > 1) result + n1
-    else return result.substring(0, result.length - 1)
+    else result.substring(0, result.length - 1)
 }
 
 /**
@@ -270,12 +270,7 @@ fun convert(n: Int, base: Int): List<Int> {
         n1 /= base
     }
     result.add(n1)
-    for (i in 0..((result.size - 1) / 2)) {
-        val k: Int = result[i]
-        result[i] = result[result.size - 1 - i]
-        result[result.size - 1 - i] = k
-    }
-    return result
+    return result.reversed()
 }
 
 /**
@@ -291,19 +286,16 @@ fun convert(n: Int, base: Int): List<Int> {
  */
 fun convertToString(n: Int, base: Int): String {
     var result = ""
+    val symbols = "abcdefghijklmnopqrstuvwxyz"
     var n1 = n
     while (n1 > 0) {
         if (n1 % base > 9)
-            result += (n1 % base + 87).toChar()
-        else result += n1 % base
+            result += symbols[n1 % base - 10]
+        else
+            result += n1 % base
         n1 /= base
     }
-    var result1 = ""
-    for (i in result.length - 1 downTo 0) {
-        result1 += result[i]
-    }
-    if (result1.isEmpty()) result1 += "0"
-    return result1
+    return result.reversed()
 }
 
 
@@ -339,15 +331,11 @@ fun decimal(digits: List<Int>, base: Int): Int {
 fun decimalFromString(str: String, base: Int): Int {
     var result = 0
     var grade = 1
-    var number = 0 // разряд числа в системе base
     for (i in str.length - 1 downTo 0) {
-        if (str[i] <= '9')
-            for (j in '0'..'9') {
-                if (str[i] == j) number = j.toInt() - 48
-            } else
-            for (j in 'a'..'z') {
-                if (str[i] == j) number = j.toInt() - 87
-            }
+        val number = if (str[i] <= '9')
+            str[i] - '0'
+        else
+            str[i] - 'a' + 10
         result += number * grade
         grade *= base
     }
@@ -363,25 +351,25 @@ fun decimalFromString(str: String, base: Int): Int {
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
 
-fun digit(n: Int, list: List<Char>): List<Char> {
-    val result = mutableListOf<Char>()
+fun digit(n: Int, list: List<Char>): String {
+    var result = ""
     var number = n
     if (number == 9) {
-        result.add(list[2])
-        result.add(list[0])
+        result += list[2]
+        result += list[0]
     }
     if (number in 6..8) {
         number++
         while (number >= 7) {
-            result.add(list[0])
+            result += list[0]
             number--
         }
     }
-    if (number in 4..6) result.add(list[1])
-    if (number == 4) result.add(list[0])
+    if (number in 4..6) result += list[1]
+    if (number == 4) result += list[0]
     if (number in 1..3) {
         while (number >= 1) {
-            result.add(list[0])
+            result += list[0]
             number--
         }
     }
@@ -389,24 +377,20 @@ fun digit(n: Int, list: List<Char>): List<Char> {
 }
 
 fun roman(n: Int): String {
-    val result = mutableListOf<Char>() // перевернутый результат
+    var result = ""// перевернутый результат
     var n1 = n
     var count = 0 // номер разряда
-    var result1 = "" // конечный результат
     while (n1 > 0) {
         count++
         when {
             (count == 1 && n1 % 10 != 0) -> result += digit(n1 % 10, listOf('I', 'V', 'X'))
             (count == 2 && n1 % 10 != 0) -> result += digit(n1 % 10, listOf('X', 'L', 'C'))
             (count == 3 && n1 % 10 != 0) -> result += digit(n1 % 10, listOf('C', 'D', 'M'))
-            (count == 4) -> for (i in 1..n1 % 10) result.add('M')
+            (count == 4) -> repeat(n1 % 10) { result += 'M' }
         }
         n1 /= 10
     }
-    for (i in (result.size - 1) downTo 0) {
-        result1 += result[i].toString()
-    }
-    return result1
+    return result.reversed()
 }
 
 /**
@@ -416,118 +400,110 @@ fun roman(n: Int): String {
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun digit1(number: Int, list: List<String>): String = list[number - 1]
-
 fun russian(n: Int): String {
-    val result = arrayListOf<String>() // перевернутый результат
-    var result1 = "" // конечный результат
+    var result = ""
     var n1 = n
     var count = 0 // номер разряда
     while (n1 > 0) {
         count++
+        var list: List<String>
         when {
             (n1 % 100 in 10..19 && (count == 1 || count == 4)) -> {
-                if (count == 4) result.add("тысяч")
-                result += digit1(
-                    n1 % 10 + 1,
-                    listOf(
-                        "десять",
-                        "одиннадцать",
-                        "двенадцать",
-                        "тринадцать",
-                        "четырнадцать",
-                        "пятнадцать",
-                        "шестнадцать",
-                        "семнадцать",
-                        "восемнадцать",
-                        "девятнадцать"
-                    )
+                if (count == 4) result += " чясыт"
+                list = listOf(
+                    "десять ",
+                    "одиннадцать ",
+                    "двенадцать ",
+                    "тринадцать ",
+                    "четырнадцать ",
+                    "пятнадцать ",
+                    "шестнадцать ",
+                    "семнадцать ",
+                    "восемнадцать ",
+                    "девятнадцать "
                 )
+                result += list[n1 % 10].reversed()
                 count++
                 n1 /= 10
             }
-            (count == 1 && n1 % 10 != 0) -> result += digit1(
-                n1 % 10,
-                listOf("один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
-            )
-            (count == 2 && n1 % 10 != 0) -> result += digit1(
-                n1 % 10,
-                listOf(
-                    "",
-                    "двадцать",
-                    "тридцать",
-                    "сорок",
-                    "пятьдесят",
-                    "шестьдесят",
-                    "семьдесят",
-                    "восемьдесят",
-                    "девяносто"
+            (count == 1 && n1 % 10 != 0) -> {
+                list = listOf("один ", "два ", "три ", "четыре ", "пять ", "шесть ", "семь ", "восемь ", "девять ")
+                result += list[n1 % 10 - 1].reversed()
+            }
+
+            (count == 2 && n1 % 10 != 0) -> {
+                list = listOf(
+                    "двадцать ",
+                    "тридцать ",
+                    "сорок ",
+                    "пятьдесят ",
+                    "шестьдесят ",
+                    "семьдесят ",
+                    "восемьдесят ",
+                    "девяносто "
                 )
-            )
-            (count == 3 && n1 % 10 != 0) -> result += digit1(
-                n1 % 10,
-                listOf(
-                    "сто",
-                    "двести",
-                    "триста",
-                    "четыреста",
-                    "пятьсот",
-                    "шестьсот",
-                    "семьсот",
-                    "восемьсот",
-                    "девятьсот"
+                result += list[n1 % 10 - 2].reversed()
+            }
+            (count == 3 && n1 % 10 != 0) -> {
+                list = listOf(
+                    "сто ",
+                    "двести ",
+                    "триста ",
+                    "четыреста ",
+                    "пятьсот ",
+                    "шестьсот ",
+                    "семьсот ",
+                    "восемьсот ",
+                    "девятьсот "
                 )
-            )
-            (count == 4) -> result += digit1(
-                n1 % 10 + 1,
-                listOf(
-                    "тысяч",
-                    "одна тысяча",
-                    "две тысячи",
-                    "три тысячи",
-                    "четыре тысячи",
-                    "пять тысяч",
-                    "шесть тысяч",
-                    "семь тысяч",
-                    "восемь тысяч",
-                    "девять тысяч"
+                result += list[n1 % 10 - 1].reversed()
+            }
+            (count == 4) -> {
+                list = listOf(
+                    "тысяч ",
+                    "одна тысяча ",
+                    "две тысячи ",
+                    "три тысячи ",
+                    "четыре тысячи ",
+                    "пять тысяч ",
+                    "шесть тысяч ",
+                    "семь тысяч ",
+                    "восемь тысяч ",
+                    "девять тысяч "
                 )
-            )
-            (count == 5 && n1 % 10 != 0) -> result += digit1(
-                n1 % 10,
-                listOf(
-                    "",
-                    "двадцать",
-                    "тридцать",
-                    "сорок",
-                    "пятьдесят",
-                    "шестьдесят",
-                    "семьдесят",
-                    "восемьдесят",
-                    "девяносто"
+                result += list[n1 % 10].reversed()
+            }
+            (count == 5 && n1 % 10 != 0) -> {
+                list = listOf(
+                    "двадцать ",
+                    "тридцать ",
+                    "сорок ",
+                    "пятьдесят ",
+                    "шестьдесят ",
+                    "семьдесят ",
+                    "восемьдесят ",
+                    "девяносто "
                 )
-            )
-            (count == 6 && n1 % 10 != 0) -> result += digit1(
-                n1 % 10,
-                listOf(
-                    "сто",
-                    "двести",
-                    "триста",
-                    "четыреста",
-                    "пятьсот",
-                    "шестьсот",
-                    "семьсот",
-                    "восемьсот",
-                    "девятьсот"
+                result += list[n1 % 10 - 2].reversed()
+            }
+            (count == 6 && n1 % 10 != 0) -> {
+                list = listOf(
+                    "сто ",
+                    "двести ",
+                    "триста ",
+                    "четыреста ",
+                    "пятьсот ",
+                    "шестьсот ",
+                    "семьсот ",
+                    "восемьсот ",
+                    "девятьсот "
                 )
-            )
+                result += list[n1 % 10 - 1].reversed()
+            }
         }
         n1 /= 10
 
     }
-    for (i in (result.size - 1) downTo 0) {
-        result1 += result[i]
-        if (i != 0) result1 += " "
-    }
-    return result1
+    return result.reversed().trim()
 }
+

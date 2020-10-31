@@ -314,9 +314,7 @@ fun fibSequenceDigit(n: Int): Int {
         number++
     }
     var number1 = fib(number - 1)
-    for (i in 1..(line - n)) {
-        number1 /= 10
-    }
-    return (number1 % 10)
+    repeat(line - n) { number1 /= 10 }
+    return number1 % 10
 }
 
