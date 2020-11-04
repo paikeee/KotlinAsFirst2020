@@ -287,13 +287,12 @@ fun convert(n: Int, base: Int): List<Int> {
 fun convertToString(n: Int, base: Int): String {
     if (n == 0) return "0"
     var result = ""
-    val symbols = "abcdefghijklmnopqrstuvwxyz"
     var n1 = n
     while (n1 > 0) {
-        if (n1 % base > 9)
-            result += symbols[n1 % base - 10]
+        result += if (n1 % base > 9)
+            'a' + (n1 % base - 10)
         else
-            result += n1 % base
+            n1 % base
         n1 /= base
     }
     return result.reversed()
@@ -310,8 +309,8 @@ fun convertToString(n: Int, base: Int): String {
 fun decimal(digits: List<Int>, base: Int): Int {
     var grade = 1
     var result = 0
-    for (i in digits.size - 1 downTo 0) {
-        result += digits[i] * grade
+    for (digit in digits.reversed()) {
+        result += digit * grade
         grade *= base
     }
     return result
@@ -332,11 +331,11 @@ fun decimal(digits: List<Int>, base: Int): Int {
 fun decimalFromString(str: String, base: Int): Int {
     var result = 0
     var grade = 1
-    for (i in str.length - 1 downTo 0) {
-        val number = if (str[i] <= '9')
-            str[i] - '0'
+    for (element in str.reversed()) {
+        val number = if (element <= '9')
+            element - '0'
         else
-            str[i] - 'a' + 10
+            element - 'a' + 10
         result += number * grade
         grade *= base
     }
@@ -354,26 +353,14 @@ fun decimalFromString(str: String, base: Int): Int {
 
 fun digit(n: Int, list: List<Char>): String {
     var result = ""
-    var number = n
-    if (number == 9) {
+    if (n == 9) {
         result += list[2]
         result += list[0]
     }
-    if (number in 6..8) {
-        number++
-        while (number >= 7) {
-            result += list[0]
-            number--
-        }
-    }
-    if (number in 4..6) result += list[1]
-    if (number == 4) result += list[0]
-    if (number in 1..3) {
-        while (number >= 1) {
-            result += list[0]
-            number--
-        }
-    }
+    if (n in 6..8) result += list[0].toString().repeat(n - 5)
+    if (n in 4..8) result += list[1]
+    if (n == 4) result += list[0]
+    if (n in 1..3) result += list[0].toString().repeat(n)
     return result
 }
 
@@ -387,7 +374,7 @@ fun roman(n: Int): String {
             (count == 1 && n1 % 10 != 0) -> result += digit(n1 % 10, listOf('I', 'V', 'X'))
             (count == 2 && n1 % 10 != 0) -> result += digit(n1 % 10, listOf('X', 'L', 'C'))
             (count == 3 && n1 % 10 != 0) -> result += digit(n1 % 10, listOf('C', 'D', 'M'))
-            (count == 4) -> repeat(n1 % 10) { result += 'M' }
+            (count == 4) -> result += "M".repeat(n1 % 10)
         }
         n1 /= 10
     }

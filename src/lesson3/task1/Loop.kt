@@ -4,6 +4,7 @@ package lesson3.task1
 
 import lesson1.task1.sqr
 import kotlin.math.sqrt
+import kotlin.math.pow
 
 // Урок 3: циклы
 // Максимальное количество баллов = 9
@@ -313,8 +314,7 @@ fun fibSequenceDigit(n: Int): Int {
         line += digitNumber(fib(number))
         number++
     }
-    var number1 = fib(number - 1)
-    repeat(line - n) { number1 /= 10 }
-    return number1 % 10
+    val number1 = fib(number - 1)
+    return number1 / 10.0.pow(line - n).toInt() % 10
 }
 
