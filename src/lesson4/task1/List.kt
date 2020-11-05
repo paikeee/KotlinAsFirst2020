@@ -239,21 +239,7 @@ fun factorize(n: Int): List<Int> {
  * Результат разложения вернуть в виде строки, например 75 -> 3*5*5
  * Множители в результирующей строке должны располагаться по возрастанию.
  */
-fun factorizeToString(n: Int): String {
-    var result = ""
-    var n1 = n
-    var k = 2
-    while (n1 > 1) {
-        while (n1 % k == 0) {
-            result = "$result$k*"
-            n1 /= k
-        }
-        k++
-        if (k > sqrt(n1.toDouble()).toInt()) break
-    }
-    return if (n1 > 1) result + n1
-    else result.substring(0, result.length - 1)
-}
+fun factorizeToString(n: Int): String = factorize(n).joinToString(separator = "*")
 
 /**
  * Средняя (3 балла)
@@ -284,7 +270,9 @@ fun convert(n: Int, base: Int): List<Int> {
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, n.toString(base) и подобные), запрещается.
  */
-fun convertToString(n: Int, base: Int): String {
+fun convertToString(n: Int, base: Int): String =
+    convert(n, base).joinToString(separator = "", transform = { if (it <= 9) "$it" else ('a' + it - 10).toString() })
+/* {
     if (n == 0) return "0"
     var result = ""
     var n1 = n
@@ -296,7 +284,7 @@ fun convertToString(n: Int, base: Int): String {
         n1 /= base
     }
     return result.reversed()
-}
+} */
 
 
 /**

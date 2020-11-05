@@ -291,11 +291,7 @@ fun squareSequenceDigit(n: Int): Int {
         number++
     }
     number--
-    var result = sqr(number)
-    for (i in 1..(line - n)) {
-        result /= 10
-    }
-    return (result % 10)
+    return sqr(number) / 10.0.pow(line - n).toInt() % 10
 }
 
 /**
