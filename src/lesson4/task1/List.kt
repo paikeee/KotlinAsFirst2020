@@ -272,20 +272,6 @@ fun convert(n: Int, base: Int): List<Int> {
  */
 fun convertToString(n: Int, base: Int): String =
     convert(n, base).joinToString(separator = "", transform = { if (it <= 9) "$it" else ('a' + it - 10).toString() })
-/* {
-    if (n == 0) return "0"
-    var result = ""
-    var n1 = n
-    while (n1 > 0) {
-        result += if (n1 % base > 9)
-            'a' + (n1 % base - 10)
-        else
-            n1 % base
-        n1 /= base
-    }
-    return result.reversed()
-} */
-
 
 /**
  * Средняя (3 балла)
