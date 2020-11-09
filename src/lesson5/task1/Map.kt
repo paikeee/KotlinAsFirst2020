@@ -220,7 +220,7 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
     var min = Double.MAX_VALUE
     var cheapest: String? = null
     for ((key, value) in stuff)
-        if (value.first == kind && value.second < min) {
+        if (value.first == kind && value.second <= min) {
             min = value.second
             cheapest = key
         }
@@ -236,9 +236,7 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  * Например:
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
-fun canBuildFrom(chars: List<Char>, word: String): Boolean =
-    if (word != "") chars.toSet() == word.toSet()
-    else true
+fun canBuildFrom(chars: List<Char>, word: String): Boolean = chars.toSet().intersect(word.toSet()) == word.toSet()
 
 /**
  * Средняя (4 балла)
@@ -385,11 +383,13 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *   ) -> emptySet()
  */
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
-    if (treasures.isEmpty()) return setOf()
-    val treasure: Array<Array<Int>> = Array(treasures.size) { Array(capacity) { 0 } }
+    val treasure: Array<Array<Int>> = Array(treasures.size) { Array(capacity + 1) { 0 } }
     val list = treasures.keys.toList()
+    if (treasures.size == 1)
+        for ((key) in treasures)
+            if (treasures[key]!!.first <= capacity) return treasures.keys
     for (i in 1 until treasures.size)
-        for (j in 0 until capacity) {
+        for (j in 0 until capacity + 1) {
             if (list.isNotEmpty()) {
                 val first = treasures[list[i - 1]]?.first
                 val second = treasures[list[i - 1]]?.second
@@ -411,7 +411,7 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
         }
         return list1
     }
-    backpack(treasures.size - 1, capacity - 1)
+    backpack(treasures.size - 1, capacity)
     val answer = mutableSetOf<String>()
     for (i in list1.indices)
         answer.add(list[i])
