@@ -262,6 +262,7 @@ class Tests {
         assertFalse(hasAnagrams(listOf("рот", "свет", "код", "дверь")))
         assertFalse(hasAnagrams(listOf("поле", "полено")))
         assertTrue(hasAnagrams(listOf("лунь", "нуль")))
+        assertTrue(hasAnagrams(listOf("", "а", "а")))
     }
 
     @Test
@@ -299,6 +300,22 @@ class Tests {
                 )
             )
         )
+        assertEquals(
+            mapOf(
+                "2" to setOf("71"),
+                "1" to setOf("2", "71"),
+                "0" to setOf("1", "2", "71"),
+                "71" to setOf()
+            ),
+            propagateHandshakes(
+                mapOf(
+                    "2" to setOf("71"),
+                    "1" to setOf("2"),
+                    "0" to setOf("1"),
+                    "71" to setOf()
+                )
+            )
+        )
     }
 
     @Test
@@ -315,6 +332,10 @@ class Tests {
         assertEquals(
             Pair(-1, -1),
             findSumOfTwo(listOf(1, 2, 3), 6)
+        )
+        assertEquals(
+            Pair(1, 5),
+            findSumOfTwo(listOf(1, 0, 1, 1, 1, 0, 1), 0)
         )
     }
 

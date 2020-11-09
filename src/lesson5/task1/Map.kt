@@ -236,7 +236,9 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  * Например:
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
-fun canBuildFrom(chars: List<Char>, word: String): Boolean = chars.toSet() == word.toSet()
+fun canBuildFrom(chars: List<Char>, word: String): Boolean =
+    if (word != "") chars.toSet() == word.toSet()
+    else true
 
 /**
  * Средняя (4 балла)
@@ -271,7 +273,7 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
 fun hasAnagrams(words: List<String>): Boolean {
-    for (i in words.indices - 1)
+    for (i in 0..words.size - 2)
         for (j in i + 1 until words.size)
             if (words[i].length == words[j].length && words[i].toSet() == words[j].toSet())
                 return true
@@ -312,15 +314,22 @@ fun hasAnagrams(words: List<String>): Boolean {
  *          "GoodGnome" to setOf()
  *        )
  */
+
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
     val map = mutableMapOf<String, Set<String>>()
     for ((name, mates) in friends) {
         val knows: MutableSet<String> = mutableSetOf()
-        knows += mates
-        for (i in mates) {
-            if (i in friends) knows += friends.getValue(i)
-            if (!friends.containsKey(i)) map[i] = setOf()
+        fun search(mates1: Set<String>): Set<String> {
+            for (i in mates1) {
+                if (!friends.containsKey(i)) map[i] = setOf()
+                if (i in friends && knows + friends.getValue(i) != knows) {
+                    knows += friends.getValue(i)
+                    search(friends.getValue(i))
+                }
+            }
+            return knows
         }
+        knows += mates + search(mates)
         if (name in knows) knows -= name
         map[name] = knows
     }
@@ -345,10 +354,10 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    for (i in list.indices - 1)
+    for (i in 0..list.size - 2)
         for (j in i + 1 until list.size)
             if (list[i] + list[j] == number) {
-                return if (list[i] < list[j]) Pair(i, j)
+                return if (list[i] <= list[j]) Pair(i, j)
                 else Pair(j, i)
             }
     return Pair(-1, -1)
@@ -376,6 +385,7 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *   ) -> emptySet()
  */
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+    if (treasures.isEmpty()) return setOf()
     val treasure: Array<Array<Int>> = Array(treasures.size) { Array(capacity) { 0 } }
     val list = treasures.keys.toList()
     for (i in 1 until treasures.size)
