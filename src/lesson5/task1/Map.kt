@@ -168,8 +168,8 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
     val map = mapA.toMutableMap()
     for ((key, value) in mapB) {
         when {
-            (key !in map) -> map[key] = value
-            (map.contains(key) && map[key] != value) -> map[key] += ", $value"
+            key !in map -> map[key] = value
+            key in map && map[key] != value -> map[key] += ", $value"
         }
     }
     return map
@@ -190,8 +190,8 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
     for ((stock, price) in stockPrices)
         map[stock] = map[stock]?.let { it + price } ?: listOf(price)
     val ans = mutableMapOf<String, Double>()
-    for ((stock) in map)
-        ans[stock] = map[stock]!!.sum() / map[stock]!!.size.toDouble()
+    for ((stock, price) in map)
+        ans[stock] = price.sum() / price.size.toDouble()
     return ans
 }
 
@@ -266,12 +266,10 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
  */
 fun hasAnagrams(words: List<String>): Boolean {
     val list = mutableSetOf<List<Char>>()
-    val list2 = mutableSetOf<List<Char>>()
     for (word in words) {
         val a = word.toLowerCase().toList().sorted()
+        if (a in list) return true
         list.add(a)
-        if (list == list2) return true
-        list2.add(a)
     }
     return false
 }
@@ -351,9 +349,11 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     val map = mutableMapOf<Int, Int>()
-    for (i in list.indices)
-        if (map[list[i]] != null) return Pair(map[list[i]]!!, i)
+    for (i in list.indices) {
+        val j = map[list[i]]
+        if (j != null) return Pair(j, i)
         else map[number - list[i]] = i
+    }
     return Pair(-1, -1)
 }
 
