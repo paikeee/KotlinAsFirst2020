@@ -401,8 +401,5 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
         return list1
     }
     backpack(treasures.size, capacity)
-    val answer = mutableSetOf<String>()
-    for (i in list1)
-        answer.add(list[i - 1])
-    return answer
+    return (list1.map { list[it - 1] }).toSet()
 }
