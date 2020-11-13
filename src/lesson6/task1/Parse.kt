@@ -2,6 +2,9 @@
 
 package lesson6.task1
 
+import lesson2.task2.daysInMonth
+import kotlin.math.max
+
 // Урок 6: разбор строк, исключения
 // Максимальное количество баллов = 13
 // Рекомендуемое количество баллов = 11
@@ -74,7 +77,19 @@ fun main() {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-fun dateStrToDigit(str: String): String = TODO()
+val months = listOf(
+    "января", "февраля", "марта", "апреля", "мая", "июня",
+    "июля", "августа", "сентября", "октября", "ноября", "декабря"
+)
+
+fun dateStrToDigit(str: String): String {
+    val parts = str.split(" ")
+    if (parts.size != 3) return ""
+    val month = if (parts[1] in months) (months.indexOf(parts[1]) + 1) else return ""
+    val year = if (parts[2].toInt() > 0) parts[2].toInt() else return ""
+    val day = if (parts[0].toInt() in 1..daysInMonth(month, year)) parts[0].toInt() else return ""
+    return String.format("%02d.%02d.%d", day, month, year)
+}
 
 /**
  * Средняя (4 балла)
@@ -86,7 +101,14 @@ fun dateStrToDigit(str: String): String = TODO()
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30 февраля 2009) считается неверными
  * входными данными.
  */
-fun dateDigitToStr(digital: String): String = TODO()
+fun dateDigitToStr(digital: String): String {
+    val parts = digital.split(".")
+    if (parts.size != 3) return ""
+    val month = if (parts[1].toIntOrNull() in 1..12) months[parts[1].toInt() - 1] else return ""
+    val year = if (parts[2].toInt() > 0) parts[2].toInt() else return ""
+    val day = if (parts[0].toInt() in 1..daysInMonth(parts[1].toInt(), year)) parts[0].toInt() else return ""
+    return "$day $month $year"
+}
 
 /**
  * Средняя (4 балла)
@@ -114,7 +136,19 @@ fun flattenPhoneNumber(phone: String): String = TODO()
  * Прочитать строку и вернуть максимальное присутствующее в ней число (717 в примере).
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
-fun bestLongJump(jumps: String): Int = TODO()
+fun bestLongJump(jumps: String): Int {
+    val parts = jumps.split(" ")
+    var jump = -1
+    for (i in parts)
+        if (i != "-" && i != "%")
+            try {
+                val n = i.toInt()
+                jump = max(jump, n)
+            } catch (e: NumberFormatException) {
+                return -1
+            }
+    return jump
+}
 
 /**
  * Сложная (6 баллов)
@@ -127,7 +161,22 @@ fun bestLongJump(jumps: String): Int = TODO()
  * При нарушении формата входной строки, а также в случае отсутствия удачных попыток,
  * вернуть -1.
  */
-fun bestHighJump(jumps: String): Int = TODO()
+fun bestHighJump(jumps: String): Int {
+    val parts = jumps.split(" ")
+    var jump = -1
+    if (parts.size % 2 != 0) return -1
+    for (i in 1 until parts.size step 2) {
+        if ("+" in parts[i])
+            try {
+                jump = max(parts[i - 1].toInt(), jump)
+            } catch (e: NumberFormatException) {
+                return -1
+            }
+        else if ("%" in parts || "-" in parts) continue
+        else return -1
+    }
+    return jump
+}
 
 /**
  * Сложная (6 баллов)
@@ -138,7 +187,24 @@ fun bestHighJump(jumps: String): Int = TODO()
  * Вернуть значение выражения (6 для примера).
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
-fun plusMinus(expression: String): Int = TODO()
+fun plusMinus(expression: String): Int {
+    val parts = expression.split(" ")
+    if (parts.size % 2 == 0) throw IllegalArgumentException()
+    var answer =
+        if ("+" !in parts[0] && "-" !in parts[0]) parts[0].toInt()
+        else throw IllegalArgumentException()
+    if (parts.size != 1)
+        for (i in 2 until parts.size step 2) {
+            try {
+                if ("+" !in parts[i] && "-" !in parts[i])
+                    answer += if (parts[i - 1] == "+") parts[i].toInt() else -parts[i].toInt()
+                else throw IllegalArgumentException()
+            } catch (e: NumberFormatException) {
+                throw IllegalArgumentException()
+            }
+        }
+    return answer
+}
 
 /**
  * Сложная (6 баллов)
@@ -149,7 +215,17 @@ fun plusMinus(expression: String): Int = TODO()
  * Вернуть индекс начала первого повторяющегося слова, или -1, если повторов нет.
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
-fun firstDuplicateIndex(str: String): Int = TODO()
+fun firstDuplicateIndex(str: String): Int {
+    val parts = str.split(" ")
+    var index = 0
+    if (parts.size > 1)
+        for (i in 0 until parts.size - 1) {
+            if (parts[i].toLowerCase() == parts[i + 1].toLowerCase())
+                return index
+            index += parts[i].length + 1
+        }
+    return -1
+}
 
 /**
  * Сложная (6 баллов)
@@ -213,4 +289,53 @@ fun fromRoman(roman: String): Int = TODO()
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
-fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()
+fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
+    val result = MutableList(cells) { 0 }
+    val symbols = setOf('+', '-', '[', ']', '>', '<', ' ')
+    if (commands.toSet().union(symbols) != symbols) throw IllegalArgumentException()
+    var check = 0
+    for (i in commands)
+        when (i) {
+            '[' -> check++
+            ']' -> check--
+        }
+    if (check != 0) throw IllegalArgumentException()
+    var current = cells / 2
+    val remain = commands.length
+    var i = 0
+    var steps = 0
+    val cycle = mutableListOf<Int>()
+    while (steps < limit && remain != i) {
+        when (commands[i]) {
+            '<' -> {
+                if (current == 0) throw IllegalStateException()
+                current--
+            }
+            '>' -> {
+                if (current + 1 == cells) throw IllegalStateException()
+                current++
+            }
+            '+' -> result[current]++
+            '-' -> result[current]--
+            '[' -> {
+                var end = i + 1
+                while (end < remain) {
+                    if (commands[end] == '[') check++
+                    if (commands[end] == ']')
+                        if (check != 0) check--
+                        else break
+                    end++
+                }
+                if (result[current] == 0) i = end
+                else cycle.add(i)
+            }
+            ']' -> {
+                if (result[current] != 0) i = cycle.last()
+                else cycle.removeLast()
+            }
+        }
+        i++
+        steps++
+    }
+    return result
+}
