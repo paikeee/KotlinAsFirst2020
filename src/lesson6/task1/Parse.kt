@@ -297,7 +297,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
     for (i in commands)
         when (i) {
             '[' -> check++
-            ']' -> check--
+            ']' -> if (check != 0) check--
         }
     if (check != 0) throw IllegalArgumentException()
     var current = cells / 2
