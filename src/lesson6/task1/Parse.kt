@@ -104,7 +104,9 @@ fun dateStrToDigit(str: String): String {
 fun dateDigitToStr(digital: String): String {
     val parts = digital.split(".")
     if (parts.size != 3) return ""
-    val month = months[parts[1]] ?: return ""
+    var month = ""
+    for ((key) in months) if (months[key] == parts[1].toIntOrNull()) month = key
+    if (month == "") return ""
     val year = if (parts[2].toInt() > 0) parts[2].toInt() else return ""
     val day = if (parts[0].toInt() in 1..daysInMonth(parts[1].toInt(), year)) parts[0].toInt() else return ""
     return "$day $month $year"
@@ -298,7 +300,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
     for (i in commands)
         when (i) {
             '[' -> check++
-            ']' -> if (check != 0) check--
+            ']' -> if (check == 0) throw IllegalArgumentException() else check--
         }
     if (check != 0) throw IllegalArgumentException()
     var current = cells / 2
