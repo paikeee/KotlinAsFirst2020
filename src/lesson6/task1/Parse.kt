@@ -77,15 +77,15 @@ fun main() {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-val months = listOf(
-    "января", "февраля", "марта", "апреля", "мая", "июня",
-    "июля", "августа", "сентября", "октября", "ноября", "декабря"
+val months = mapOf(
+    "января" to 1, "февраля" to 2, "марта" to 3, "апреля" to 4, "мая" to 5, "июня" to 6,
+    "июля" to 7, "августа" to 8, "сентября" to 9, "октября" to 10, "ноября" to 11, "декабря" to 12
 )
 
 fun dateStrToDigit(str: String): String {
     val parts = str.split(" ")
     if (parts.size != 3) return ""
-    val month = if (parts[1] in months) (months.indexOf(parts[1]) + 1) else return ""
+    val month = months[parts[1]] ?: return ""
     val year = if (parts[2].toInt() > 0) parts[2].toInt() else return ""
     val day = if (parts[0].toInt() in 1..daysInMonth(month, year)) parts[0].toInt() else return ""
     return String.format("%02d.%02d.%d", day, month, year)
@@ -104,7 +104,7 @@ fun dateStrToDigit(str: String): String {
 fun dateDigitToStr(digital: String): String {
     val parts = digital.split(".")
     if (parts.size != 3) return ""
-    val month = if (parts[1].toIntOrNull() in 1..12) months[parts[1].toInt() - 1] else return ""
+    val month = months[parts[1]] ?: return ""
     val year = if (parts[2].toInt() > 0) parts[2].toInt() else return ""
     val day = if (parts[0].toInt() in 1..daysInMonth(parts[1].toInt(), year)) parts[0].toInt() else return ""
     return "$day $month $year"
@@ -190,19 +190,20 @@ fun bestHighJump(jumps: String): Int {
 fun plusMinus(expression: String): Int {
     val parts = expression.split(" ")
     if (parts.size % 2 == 0) throw IllegalArgumentException()
-    var answer =
-        if ("+" !in parts[0] && "-" !in parts[0]) parts[0].toInt()
-        else throw IllegalArgumentException()
-    if (parts.size != 1)
-        for (i in 2 until parts.size step 2) {
+    var answer = 0
+    for (i in parts.indices step 2) {
+        if ("+" !in parts[i] && "-" !in parts[i])
             try {
-                if ("+" !in parts[i] && "-" !in parts[i])
-                    answer += if (parts[i - 1] == "+") parts[i].toInt() else -parts[i].toInt()
-                else throw IllegalArgumentException()
-            } catch (e: NumberFormatException) {
-                throw IllegalArgumentException()
+                when (parts[i - 1]) {
+                    "+" -> answer += parts[i].toInt()
+                    "-" -> answer -= parts[i].toInt()
+                    else -> throw IllegalArgumentException()
+                }
+            } catch (e: IndexOutOfBoundsException) {
+                answer = parts[i].toInt()
             }
-        }
+        else throw IllegalArgumentException()
+    }
     return answer
 }
 
