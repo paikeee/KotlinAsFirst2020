@@ -77,12 +77,12 @@ fun main() {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-val months = mapOf(
-    "января" to 1, "февраля" to 2, "марта" to 3, "апреля" to 4, "мая" to 5, "июня" to 6,
-    "июля" to 7, "августа" to 8, "сентября" to 9, "октября" to 10, "ноября" to 11, "декабря" to 12
-)
 
 fun dateStrToDigit(str: String): String {
+    val months = mapOf(
+        "января" to 1, "февраля" to 2, "марта" to 3, "апреля" to 4, "мая" to 5, "июня" to 6,
+        "июля" to 7, "августа" to 8, "сентября" to 9, "октября" to 10, "ноября" to 11, "декабря" to 12
+    )
     val parts = str.split(" ")
     if (parts.size != 3) return ""
     val month = months[parts[1]] ?: return ""
@@ -104,9 +104,11 @@ fun dateStrToDigit(str: String): String {
 fun dateDigitToStr(digital: String): String {
     val parts = digital.split(".")
     if (parts.size != 3) return ""
-    var month = ""
-    for ((key) in months) if (months[key] == parts[1].toIntOrNull()) month = key
-    if (month == "") return ""
+    val months = mapOf(
+        1 to "января", 2 to "февраля", 3 to "марта", 4 to "апреля", 5 to "мая", 6 to "июня",
+        7 to "июля", 8 to "августа", 9 to "сентября", 10 to "октября", 11 to "ноября", 12 to "декабря"
+    )
+    val month = months[parts[1].toIntOrNull()] ?: return ""
     val year = if (parts[2].toInt() > 0) parts[2].toInt() else return ""
     val day = if (parts[0].toInt() in 1..daysInMonth(parts[1].toInt(), year)) parts[0].toInt() else return ""
     return "$day $month $year"
