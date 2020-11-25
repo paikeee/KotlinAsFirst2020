@@ -5,6 +5,7 @@ package lesson6.task1
 import lesson2.task2.daysInMonth
 import kotlin.math.max
 
+
 // Урок 6: разбор строк, исключения
 // Максимальное количество баллов = 13
 // Рекомендуемое количество баллов = 11
@@ -77,12 +78,12 @@ fun main() {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
+val months = mapOf(
+    "января" to 1, "февраля" to 2, "марта" to 3, "апреля" to 4, "мая" to 5, "июня" to 6,
+    "июля" to 7, "августа" to 8, "сентября" to 9, "октября" to 10, "ноября" to 11, "декабря" to 12
+)
 
 fun dateStrToDigit(str: String): String {
-    val months = mapOf(
-        "января" to 1, "февраля" to 2, "марта" to 3, "апреля" to 4, "мая" to 5, "июня" to 6,
-        "июля" to 7, "августа" to 8, "сентября" to 9, "октября" to 10, "ноября" to 11, "декабря" to 12
-    )
     val parts = str.split(" ")
     if (parts.size != 3) return ""
     val month = months[parts[1]] ?: return ""
@@ -104,11 +105,9 @@ fun dateStrToDigit(str: String): String {
 fun dateDigitToStr(digital: String): String {
     val parts = digital.split(".")
     if (parts.size != 3) return ""
-    val months = mapOf(
-        1 to "января", 2 to "февраля", 3 to "марта", 4 to "апреля", 5 to "мая", 6 to "июня",
-        7 to "июля", 8 to "августа", 9 to "сентября", 10 to "октября", 11 to "ноября", 12 to "декабря"
-    )
-    val month = months[parts[1].toIntOrNull()] ?: return ""
+    val months1 = mutableMapOf<Int, String>()
+    for ((value, key) in months) months1[key] = (months1[key] ?: "") + value
+    val month = months1[parts[1].toIntOrNull()] ?: return ""
     val year = if (parts[2].toInt() > 0) parts[2].toInt() else return ""
     val day = if (parts[0].toInt() in 1..daysInMonth(parts[1].toInt(), year)) parts[0].toInt() else return ""
     return "$day $month $year"
@@ -146,9 +145,9 @@ fun bestLongJump(jumps: String): Int {
     for (i in parts)
         if (i != "-" && i != "%")
             try {
-                val n = i.toInt()
-                jump = max(jump, n)
-            } catch (e: NumberFormatException) {
+                val n = i.toIntOrNull()
+                jump = max(jump, n!!)
+            } catch (e: NullPointerException) {
                 return -1
             }
     return jump
@@ -197,15 +196,13 @@ fun plusMinus(expression: String): Int {
     var answer = 0
     for (i in parts.indices step 2) {
         if ("+" !in parts[i] && "-" !in parts[i])
-            try {
+            if (i != 0)
                 when (parts[i - 1]) {
                     "+" -> answer += parts[i].toInt()
                     "-" -> answer -= parts[i].toInt()
                     else -> throw IllegalArgumentException()
                 }
-            } catch (e: IndexOutOfBoundsException) {
-                answer = parts[i].toInt()
-            }
+            else answer = parts[i].toInt()
         else throw IllegalArgumentException()
     }
     return answer
@@ -294,9 +291,10 @@ fun fromRoman(roman: String): Int = TODO()
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
+val symbols = setOf('+', '-', '[', ']', '>', '<', ' ')
+
 fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
     val result = MutableList(cells) { 0 }
-    val symbols = setOf('+', '-', '[', ']', '>', '<', ' ')
     if (commands.toSet().union(symbols) != symbols) throw IllegalArgumentException()
     var check = 0
     for (i in commands)

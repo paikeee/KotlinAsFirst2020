@@ -101,7 +101,7 @@ fun sibilants(inputName: String, outputName: String) {
         'ы' to "и", 'ю' to "у", 'я' to "а",
         'Ы' to "И", 'Ю' to "У", 'Я' to "А"
     )
-    val listChar = listOf('ж', 'ш', 'ч', 'щ')
+    val listChar = setOf('ж', 'ш', 'ч', 'щ')
     for (line in File(inputName).readLines()) {
         writer.write(line[0].toString())
         for (i in 1 until line.length) {
