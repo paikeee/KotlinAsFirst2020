@@ -143,13 +143,12 @@ fun bestLongJump(jumps: String): Int {
     val parts = jumps.split(" ")
     var jump = -1
     for (i in parts)
-        if (i != "-" && i != "%")
-            try {
-                val n = i.toIntOrNull()
-                jump = max(jump, n!!)
-            } catch (e: NullPointerException) {
-                return -1
-            }
+        if (i != "-" && i != "%") {
+            val n = i.toIntOrNull()
+            if (n != null)
+                jump = max(jump, n)
+            else return -1
+        }
     return jump
 }
 
@@ -193,16 +192,16 @@ fun bestHighJump(jumps: String): Int {
 fun plusMinus(expression: String): Int {
     val parts = expression.split(" ")
     if (parts.size % 2 == 0) throw IllegalArgumentException()
-    var answer = 0
-    for (i in parts.indices step 2) {
+    var answer =
+        if ("+" !in parts[0] && "-" !in parts[0]) parts[0].toInt()
+        else throw IllegalArgumentException()
+    for (i in 2 until parts.size step 2) {
         if ("+" !in parts[i] && "-" !in parts[i])
-            if (i != 0)
-                when (parts[i - 1]) {
-                    "+" -> answer += parts[i].toInt()
-                    "-" -> answer -= parts[i].toInt()
-                    else -> throw IllegalArgumentException()
-                }
-            else answer = parts[i].toInt()
+            when (parts[i - 1]) {
+                "+" -> answer += parts[i].toInt()
+                "-" -> answer -= parts[i].toInt()
+                else -> throw IllegalArgumentException()
+            }
         else throw IllegalArgumentException()
     }
     return answer

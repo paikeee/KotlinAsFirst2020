@@ -95,13 +95,13 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  * Исключения (жюри, брошюра, парашют) в рамках данного задания обрабатывать не нужно
  *
  */
+val listChar = setOf('ж', 'ш', 'ч', 'щ')
+val rightChar = mapOf(
+    'ы' to "и", 'ю' to "у", 'я' to "а",
+    'Ы' to "И", 'Ю' to "У", 'Я' to "А"
+)
 fun sibilants(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
-    val rightChar = mapOf(
-        'ы' to "и", 'ю' to "у", 'я' to "а",
-        'Ы' to "И", 'Ю' to "У", 'Я' to "А"
-    )
-    val listChar = setOf('ж', 'ш', 'ч', 'щ')
     for (line in File(inputName).readLines()) {
         writer.write(line[0].toString())
         for (i in 1 until line.length) {
