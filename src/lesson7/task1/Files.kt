@@ -100,6 +100,7 @@ val rightChar = mapOf(
     'ы' to "и", 'ю' to "у", 'я' to "а",
     'Ы' to "И", 'Ю' to "У", 'Я' to "А"
 )
+
 fun sibilants(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     for (line in File(inputName).readLines()) {
@@ -132,7 +133,13 @@ fun sibilants(inputName: String, outputName: String) {
  *
  */
 fun centerFile(inputName: String, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    var longest = 0
+    for (line in File(inputName).readLines())
+        if (line.length > longest) longest = line.trim().length
+    for (line in File(inputName).readLines())
+        writer.appendLine(" ".repeat((longest - line.trim().length) / 2) + line.trim())
+    writer.close()
 }
 
 /**
