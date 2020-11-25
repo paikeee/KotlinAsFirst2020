@@ -178,7 +178,7 @@ fun alignFileByWidth(inputName: String, outputName: String) {
         val wordsCount = line.trim().split(" ").size
         if (line.trim().isNotEmpty() && wordsCount > 1) {
             val words = line.trim().toCharArray()
-            val spaces = 1 + (longest - line.trim().length) / (wordsCount - 1)
+            val spaces = (longest - line.trim().length) / (wordsCount - 1)
             var extraSpaces = (longest - line.trim().length) % (wordsCount - 1)
             var newLine = ""
             var k = 0
@@ -186,8 +186,8 @@ fun alignFileByWidth(inputName: String, outputName: String) {
                 if (word != ' ') k = 0
                 if (word == ' ' && k == 0) {
                     newLine += if (extraSpaces > 0)
-                        " ".repeat(spaces + 1)
-                    else " ".repeat(spaces)
+                        word + " ".repeat(spaces + 1)
+                    else word + " ".repeat(spaces)
                     extraSpaces--
                     k = 1
                 } else newLine += word
