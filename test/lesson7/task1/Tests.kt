@@ -157,7 +157,6 @@ Basic, Ruby, Swift.
 между                более               правой               парой               соседних               слов."""
         )
         File("temp.txt").delete()
-
     }
 
     @Test
