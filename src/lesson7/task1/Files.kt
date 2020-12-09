@@ -329,7 +329,41 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    writer.write("<html><body>")
+    val mapSymbols = mutableMapOf(
+        "**" to listOf("<b>", "</b>"),
+        "*" to listOf("<i>", "</i>"),
+        "~~" to listOf("<s>", "</s>")
+    )
+    val mapNumber = mutableMapOf("**" to 0, "*" to 0, "~~" to 0)
+    var k = 0
+    fun connector(words: List<String>, symbol: String): String {
+        var line = ""
+        for (i in 0..words.size - 2) {
+            line += words[i]
+            line += mapSymbols[symbol]!![mapNumber[symbol]!!]
+            mapNumber[symbol] = if (mapNumber[symbol] == 0) 1 else 0
+        }
+        return line + words.last()
+    }
+    for (line in File(inputName).readLines()) {
+        if (k == 0) {
+            writer.appendLine("<p>"); k++
+        }
+        if (line.isNotEmpty()) {
+            var newLine = line
+            if ("**" in line) newLine = connector(newLine.split("**"), "**")
+            if ("*" in line) newLine = connector(newLine.split("*"), "*")
+            if ("~~" in line) newLine = connector(newLine.split("~~"), "~~")
+            writer.appendLine(newLine)
+        } else if (k == 1) {
+            writer.appendLine("</p>"); k--
+        }
+    }
+    if (k == 1) writer.appendLine("</p></body></html>")
+    else writer.appendLine("</body></html>")
+    writer.close()
 }
 
 /**
