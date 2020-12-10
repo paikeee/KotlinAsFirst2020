@@ -348,10 +348,10 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
         return line + words.last()
     }
     for (line in File(inputName).readLines()) {
-        if (k == 0 && line.isNotEmpty()) {
+        if (k == 0 && line.trim().isNotEmpty()) {
             writer.appendLine("<p>"); k++
         }
-        if (line.isNotEmpty()) {
+        if (line.trim().isNotEmpty()) {
             var newLine = line
             if ("**" in line) newLine = connector(newLine.split("**"), "**")
             if ("*" in line) newLine = connector(newLine.split("*"), "*")
