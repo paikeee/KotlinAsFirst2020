@@ -330,14 +330,14 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
-    writer.write("<html><body><p>")
+    writer.write("<html><body>")
     val mapSymbols = mutableMapOf(
         "**" to listOf("<b>", "</b>"),
         "*" to listOf("<i>", "</i>"),
         "~~" to listOf("<s>", "</s>")
     )
     val mapNumber = mutableMapOf("**" to 0, "*" to 0, "~~" to 0)
-    var k = 1
+    var k = 0
     fun connector(words: List<String>, symbol: String): String {
         var line = ""
         for (i in 0..words.size - 2) {
@@ -361,8 +361,11 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
             writer.appendLine("</p>"); k--
         }
     }
-    if (k == 1) writer.appendLine("</p></body></html>")
-    else writer.appendLine("</body></html>")
+    when {
+        k == 1 -> writer.appendLine("</p></body></html>")
+        File(inputName).readText().trim().isEmpty() -> writer.appendLine("<p></p></body></html>")
+        else -> writer.appendLine("</body></html>")
+    }
     writer.close()
 }
 
