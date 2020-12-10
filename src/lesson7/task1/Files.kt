@@ -348,7 +348,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
         return line + words.last()
     }
     for (line in File(inputName).readLines()) {
-        if (k == 0) {
+        if (k == 0 && line.isNotEmpty()) {
             writer.appendLine("<p>"); k++
         }
         if (line.isNotEmpty()) {
