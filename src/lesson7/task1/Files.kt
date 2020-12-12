@@ -550,7 +550,8 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     writer.appendLine(" ".repeat(extraSpace) + "$lhv | $rhv")
     writer.appendLine(
         " ".repeat(if (spaces == 0) 0 else spaces - 1) + "-$dl" +
-                " ".repeat(digitNumber(lhv) - digitNumber(dl)) + "   ${lhv / rhv}"
+                " ".repeat(digitNumber(lhv) - if (spaces == 0) digitNumber(dl) else digitNumber(dl) + 1) +
+                "   ${lhv / rhv}"
     )
     writer.appendLine("-".repeat(digitNumber(dl) + 1))
     var remain = new - dl
