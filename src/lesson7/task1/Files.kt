@@ -548,10 +548,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     var spaces = digitNumber(lhv / grade) - digitNumber(lhv / grade / rhv * rhv)
     writer.appendLine(
         " ".repeat(spaces + extraSpace) + "-${lhv / grade / rhv * rhv}" +
-                " ".repeat(
-                    if (lhv % grade != 0) digitNumber(lhv % grade)
-                    else digitNumber(lhv % grade) - 1
-                ) + "   ${lhv / rhv}"
+                " ".repeat(digitNumber(lhv) - digitNumber(lhv / grade / rhv * rhv)) + "   ${lhv / rhv}"
     )
     writer.appendLine("-".repeat(digitNumber(lhv / grade / rhv * rhv) + 1))
     spaces += digitNumber(lhv / grade)
