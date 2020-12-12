@@ -536,7 +536,6 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  */
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     val writer = File(outputName).bufferedWriter()
-    writer.appendLine(" $lhv | $rhv")
     var grade = 10.0.pow(digitNumber(lhv) - 1).toInt()
     while (lhv / grade / rhv == 0) {
         grade /= 10
@@ -544,20 +543,23 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
             grade++; break
         }
     }
-    var extraSpace = if (digitNumber(lhv / grade) != digitNumber(lhv / grade / rhv * rhv)) 1 else 0
-    var spaces = digitNumber(lhv / grade) - digitNumber(lhv / grade / rhv * rhv)
+    var new = lhv / grade
+    var dl = new / rhv * rhv
+    var extraSpace = if (digitNumber(new) == digitNumber(dl)) 1 else 0
+    var spaces = digitNumber(new) - digitNumber(dl)
+    writer.appendLine(" ".repeat(extraSpace) + "$lhv | $rhv")
     writer.appendLine(
-        " ".repeat(spaces + extraSpace) + "-${lhv / grade / rhv * rhv}" +
-                " ".repeat(digitNumber(lhv) - digitNumber(lhv / grade / rhv * rhv)) + "   ${lhv / rhv}"
+        " ".repeat(if (spaces == 0) 0 else spaces - 1) + "-$dl" +
+                " ".repeat(digitNumber(lhv) - digitNumber(dl)) + "   ${lhv / rhv}"
     )
-    writer.appendLine("-".repeat(digitNumber(lhv / grade / rhv * rhv) + 1))
-    spaces += digitNumber(lhv / grade)
-    var remain = lhv / grade - lhv / grade / rhv * rhv
+    writer.appendLine("-".repeat(digitNumber(dl) + 1))
+    spaces += digitNumber(new)
+    var remain = new - dl
     var lhv1 = lhv
     grade /= 10
     while (grade > 0) {
-        val new = remain * 10 + lhv1 % (grade * 10) / grade
-        val dl = new / rhv * rhv
+        new = remain * 10 + lhv1 % (grade * 10) / grade
+        dl = new / rhv * rhv
         extraSpace = if (digitNumber(new) == digitNumber(dl)) 1 else 0
         lhv1 %= grade
         if (remain != 0) {
