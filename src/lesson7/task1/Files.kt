@@ -3,6 +3,8 @@
 package lesson7.task1
 
 import java.io.File
+import lesson3.task1.digitNumber
+import kotlin.math.pow
 
 // Урок 7: работа с файлами
 // Урок интегральный, поэтому его задачи имеют сильно увеличенную стоимость
@@ -533,6 +535,48 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  *
  */
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    writer.appendLine(" $lhv | $rhv")
+    var grade = 10.0.pow(digitNumber(lhv) - 1).toInt()
+    while (lhv / grade / rhv == 0) {
+        grade /= 10
+        if (grade == 0) {
+            grade++; break
+        }
+    }
+    var spaces = digitNumber(lhv / grade) - digitNumber(lhv / grade / rhv * rhv)
+    writer.appendLine(
+        " ".repeat(spaces) + "-${lhv / grade / rhv * rhv}" +
+                " ".repeat(
+                    if (lhv % grade != 0) digitNumber(lhv % grade)
+                    else digitNumber(lhv % grade) - 1
+                ) + "   ${lhv / rhv}"
+    )
+    writer.appendLine("-".repeat(digitNumber(lhv / grade / rhv * rhv) + 1))
+    spaces += digitNumber(lhv / grade)
+    var remain = lhv / grade - lhv / grade / rhv * rhv
+    var lhv1 = lhv
+    while (grade / 10 > 0) {
+        val new = remain * 10 + (lhv1 % grade / (grade / 10))
+        val dl = new / rhv * rhv
+        val extraSpace = if (digitNumber(new) == digitNumber(dl)) 1 else 0
+        lhv1 %= grade
+        if (remain != 0) {
+            writer.appendLine(" ".repeat(spaces) + "$new")
+            writer.appendLine(" ".repeat(spaces - extraSpace) + "-$dl")
+            writer.appendLine(" ".repeat(spaces - extraSpace) + "-".repeat(digitNumber(dl) + 1))
+            remain = new - dl
+            spaces += digitNumber(new - remain) - 1
+        } else {
+            writer.appendLine(" ".repeat(spaces) + "0$new")
+            writer.appendLine(" ".repeat(spaces - extraSpace + 1) + "-$dl")
+            writer.appendLine(" ".repeat(spaces - extraSpace + 1) + "-".repeat(digitNumber(dl) + 1))
+            remain = new - dl
+            spaces += digitNumber(new - remain)
+        }
+        grade /= 10
+    }
+    writer.appendLine(" ".repeat(spaces) + "$remain")
+    writer.close()
 }
 
