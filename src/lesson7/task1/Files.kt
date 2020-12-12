@@ -544,9 +544,10 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
             grade++; break
         }
     }
+    var extraSpace = if (digitNumber(lhv / grade) != digitNumber(lhv / grade / rhv * rhv)) 1 else 0
     var spaces = digitNumber(lhv / grade) - digitNumber(lhv / grade / rhv * rhv)
     writer.appendLine(
-        " ".repeat(spaces) + "-${lhv / grade / rhv * rhv}" +
+        " ".repeat(spaces + extraSpace) + "-${lhv / grade / rhv * rhv}" +
                 " ".repeat(
                     if (lhv % grade != 0) digitNumber(lhv % grade)
                     else digitNumber(lhv % grade) - 1
@@ -556,10 +557,11 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     spaces += digitNumber(lhv / grade)
     var remain = lhv / grade - lhv / grade / rhv * rhv
     var lhv1 = lhv
-    while (grade / 10 > 0) {
-        val new = remain * 10 + (lhv1 % grade / (grade / 10))
+    grade /= 10
+    while (grade > 0) {
+        val new = remain * 10 + lhv1 % (grade * 10) / grade
         val dl = new / rhv * rhv
-        val extraSpace = if (digitNumber(new) == digitNumber(dl)) 1 else 0
+        extraSpace = if (digitNumber(new) == digitNumber(dl)) 1 else 0
         lhv1 %= grade
         if (remain != 0) {
             writer.appendLine(" ".repeat(spaces) + "$new")
@@ -579,4 +581,3 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     writer.appendLine(" ".repeat(spaces) + "$remain")
     writer.close()
 }
-
