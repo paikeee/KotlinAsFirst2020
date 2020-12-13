@@ -5,6 +5,7 @@ package lesson7.task1
 import java.io.File
 import lesson3.task1.digitNumber
 import kotlin.math.pow
+import kotlin.math.max
 
 // Урок 7: работа с файлами
 // Урок интегральный, поэтому его задачи имеют сильно увеличенную стоимость
@@ -553,11 +554,12 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
                 " ".repeat(digitNumber(lhv) - if (spaces == 0) digitNumber(dl) else digitNumber(dl) + 1) +
                 "   ${lhv / rhv}"
     )
-    writer.appendLine("-".repeat(digitNumber(dl) + 1))
+    writer.appendLine("-".repeat(max(digitNumber(dl) + 1, digitNumber(new))))
     var remain = new - dl
     var lhv1 = lhv
     grade /= 10
-    if (grade > 0) spaces += digitNumber(new) else {
+    spaces += digitNumber(new) - digitNumber(remain) + if (spaces == 0) 1 else spaces
+    if (grade == 0) {
         writer.appendLine(" ".repeat(digitNumber(dl) + 1 - digitNumber(remain)) + "$remain")
         writer.close(); return
     }
@@ -568,16 +570,19 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         lhv1 %= grade
         if (remain != 0) {
             writer.appendLine(" ".repeat(spaces) + "$new")
-            writer.appendLine(" ".repeat(spaces - extraSpace) + "-$dl")
-            writer.appendLine(" ".repeat(spaces - extraSpace) + "-".repeat(digitNumber(dl) + 1))
+            writer.appendLine(" ".repeat(spaces + digitNumber(new) - digitNumber(dl) - 1) + "-$dl")
+            writer.appendLine(
+                " ".repeat(spaces - extraSpace) +
+                        "-".repeat(max(digitNumber(dl) + 1, digitNumber(new)))
+            )
             remain = new - dl
-            spaces += digitNumber(new - remain) - 1
+            spaces += digitNumber(new) - digitNumber(remain)
         } else {
             writer.appendLine(" ".repeat(spaces) + "0$new")
             writer.appendLine(" ".repeat(spaces - extraSpace + 1) + "-$dl")
             writer.appendLine(" ".repeat(spaces - extraSpace + 1) + "-".repeat(digitNumber(dl) + 1))
             remain = new - dl
-            spaces += digitNumber(new - remain)
+            spaces += digitNumber(new)
         }
         grade /= 10
     }
