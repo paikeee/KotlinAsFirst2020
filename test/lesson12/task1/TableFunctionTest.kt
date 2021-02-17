@@ -56,7 +56,7 @@ internal class TableFunctionTest {
         val function = TableFunction()
         try {
             function.getValue(0.0)
-        } catch (ex: IllegalArgumentException) {
+        } catch (ex: IllegalStateException) {
             // pass
         } catch (ex: NotImplementedError) {
             throw ex
