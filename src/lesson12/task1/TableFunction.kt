@@ -3,6 +3,7 @@
 package lesson12.task1
 
 import kotlin.math.abs
+import java.util.*
 
 /**
  * Класс "табличная функция".
@@ -17,7 +18,7 @@ import kotlin.math.abs
  */
 class TableFunction {
 
-    private val pairs = mutableListOf<Pair<Double, Double>>()
+    private val pairs = TreeMap<Double, Double>()
 
     /**
      * Количество пар в таблице
@@ -29,32 +30,26 @@ class TableFunction {
      * Вернуть true, если пары с заданным x ещё нет,
      * или false, если она уже есть (в этом случае перезаписать значение y)
      */
-    fun add(x: Double, y: Double): Boolean {
-        val pair = pairs.find { it.first == x }
-        if (pair == null) {
-            pairs.add(Pair(x, y))
-            return true
-        } else pairs.remove(pair)
-        pairs.add(Pair(x, y))
-        return false
-    }
+    fun add(x: Double, y: Double): Boolean =
+        if (pairs[x] == null) {
+            pairs[x] = y
+            true
+        } else false
 
     /**
      * Удалить пару с заданным значением x.
      * Вернуть true, если пара была удалена.
      */
-    fun remove(x: Double): Boolean {
-        val pair = pairs.find { it.first == x }
-        if (pair != null)
-            pairs.remove(pair)
-        else return false
-        return true
-    }
+    fun remove(x: Double): Boolean =
+        if (pairs[x] != null) {
+            pairs.remove(x)
+            true
+        } else false
 
     /**
      * Вернуть коллекцию из всех пар в таблице
      */
-    fun getPairs(): Collection<Pair<Double, Double>> = pairs
+    fun getPairs(): Collection<Pair<Double, Double>> = pairs.toList()
 
     /**
      * Вернуть пару, ближайшую к заданному x.
@@ -69,7 +64,7 @@ class TableFunction {
                 abs(x - first) < abs(min - x) -> min = first
                 abs(x - first) == abs(min - x) && first < min -> min = first
             }
-        return pairs.find { it.first == min }
+        return Pair(min, pairs[min]!!)
     }
 
     /**
@@ -81,42 +76,23 @@ class TableFunction {
      * Если их нет, но существуют две пары, такие, что x1 < x2 < x или x > x2 > x1, использовать экстраполяцию.
      */
     fun getValue(x: Double): Double {
-        val xy = pairs.find { it.first == x }
         when {
-            pairs.size == 0 -> throw IllegalStateException()
-            pairs.size == 1 -> return pairs.first().second
-            (xy != null) -> return xy.second
+            pairs.isEmpty() -> throw IllegalStateException()
+            pairs.size == 1 -> return pairs.values.first()
+            pairs[x] != null -> return pairs[x]!!
         }
-        var fLeft = Double.MAX_VALUE
-        var sLeft = Double.MAX_VALUE
-        var fRight = Double.MIN_VALUE
-        var sRight = Double.MIN_VALUE
-        for ((first) in pairs)
-            when {
-                first <= fLeft && first < x -> {
-                    sLeft = fLeft
-                    fLeft = first
-                }
-                first >= fRight && first > x -> {
-                    sRight = fRight
-                    fRight = first
-                }
-            }
+        val left = pairs.floorKey(x)
+        val right = pairs.ceilingKey(x)
         return when {
-            (fLeft != Double.MAX_VALUE && fRight != Double.MIN_VALUE) -> {
-                val yLeft = (pairs.find { it.first == fLeft })!!.second
-                val yRight = (pairs.find { it.first == fRight })!!.second
-                yLeft + (x - fLeft) * (yRight - yLeft) / (fRight - fLeft)
-            }
-            (sLeft != Double.MAX_VALUE) -> {
-                val y1 = (pairs.find { it.first == fLeft })!!.second
-                val y2 = (pairs.find { it.first == sLeft })!!.second
-                y2 + (x - sLeft) * (y1 - y2) / (fLeft - sLeft)
+            left != null && right != null ->
+                pairs[left]!! + (x - left) * (pairs[right]!! - pairs[left]!!) / (right - left)
+            left == null -> {
+                val right1 = pairs.higherKey(right)
+                pairs[right]!! + (x - right) * (pairs[right1]!! - pairs[right]!!) / (right1 - right)
             }
             else -> {
-                val y1 = (pairs.find { it.first == fRight })!!.second
-                val y2 = (pairs.find { it.first == sRight })!!.second
-                y1 + (x - fRight) * (y2 - y1) / (sRight - fRight)
+                val left1 = pairs.lowerKey(left)
+                pairs[left1]!! + (x - left1) * (pairs[left]!! - pairs[left1]!!) / (left - left1)
             }
         }
     }
@@ -126,7 +102,9 @@ class TableFunction {
      * и любая пара из второй таблицы входит также и в первую
      */
     override fun equals(other: Any?): Boolean =
-        other is TableFunction && other.pairs.size == pairs.size && pairs.all { it in other.pairs }
+        this === other || other is TableFunction && other.pairs.size == pairs.size
+                && pairs.toList().all { it in other.pairs.toList() }
 
     override fun hashCode(): Int = pairs.hashCode()
+
 }

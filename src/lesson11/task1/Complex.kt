@@ -7,12 +7,12 @@ import java.lang.IllegalArgumentException
 
 
 val finder = Regex("""([+-]?[\d]*[.]?[\d]*)""")
-val format = Regex("""-?\d*.?\d*[+-]\d*.?\d*i""")
+val format = Regex("""(-?\d+(?:\.\d+)?)([+-]\d+(?:\.\d+)?)i""")
 
-private fun checker(s: String, i: Int): Double =
-    if (format.matches(s))
-        (finder.findAll(s).elementAt(i).value.toDouble())
-    else throw IllegalArgumentException()
+private fun checker(s: String, i: Int): Double {
+    val result = format.matchEntire(s) ?: throw IllegalArgumentException()
+    return result.groupValues[i].toDouble()
+}
 
 /**
  * Класс "комплексное число".
@@ -36,7 +36,8 @@ class Complex(val re: Double, val im: Double) {
      * Конструктор из строки вида x+yi
      */
 
-    constructor(s: String) : this(checker(s, 0), checker(s, 1))
+    constructor(s: String) : this(checker(s, 1), checker(s, 2))
+
 
     /**
      * Сложение.
@@ -72,14 +73,13 @@ class Complex(val re: Double, val im: Double) {
     /**
      * Сравнение на равенство
      */
-    override fun equals(other: Any?): Boolean = other is Complex && re == other.re && im == other.im
+    override fun equals(other: Any?): Boolean = this === other || other is Complex && re == other.re && im == other.im
 
     /**
      * Преобразование в строку
      */
     override fun toString(): String =
         when {
-            re == 0.0 && im == 0.0 -> "0.0"
             re != 0.0 && im == 0.0 -> "$re"
             re == 0.0 && im != 0.0 -> "${im}i"
             im > 0 -> "${re}+${im}i"
