@@ -6,7 +6,6 @@ import lesson1.task1.sqr
 import java.lang.IllegalArgumentException
 
 
-val finder = Regex("""([+-]?[\d]*[.]?[\d]*)""")
 val format = Regex("""(-?\d+(?:\.\d+)?)([+-]\d+(?:\.\d+)?)i""")
 
 private fun checker(s: String, i: Int): Double {
@@ -80,7 +79,7 @@ class Complex(val re: Double, val im: Double) {
      */
     override fun toString(): String =
         when {
-            re != 0.0 && im == 0.0 -> "$re"
+            im == 0.0 -> "$re"
             re == 0.0 && im != 0.0 -> "${im}i"
             im > 0 -> "${re}+${im}i"
             else -> "$re${im}i"

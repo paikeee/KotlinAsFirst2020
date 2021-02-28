@@ -2,7 +2,6 @@
 
 package lesson12.task1
 
-import kotlin.math.abs
 import java.util.*
 
 /**
@@ -30,21 +29,20 @@ class TableFunction {
      * Вернуть true, если пары с заданным x ещё нет,
      * или false, если она уже есть (в этом случае перезаписать значение y)
      */
-    fun add(x: Double, y: Double): Boolean =
-        if (pairs[x] == null) {
-            pairs[x] = y
-            true
-        } else false
+    fun add(x: Double, y: Double): Boolean {
+        pairs.putIfAbsent(x, y) ?: return true
+        return false
+    }
 
     /**
      * Удалить пару с заданным значением x.
      * Вернуть true, если пара была удалена.
      */
-    fun remove(x: Double): Boolean =
-        if (pairs[x] != null) {
-            pairs.remove(x)
-            true
-        } else false
+    fun remove(x: Double): Boolean {
+        pairs.remove(x) ?: return false
+        return true
+    }
+
 
     /**
      * Вернуть коллекцию из всех пар в таблице
@@ -58,13 +56,14 @@ class TableFunction {
      */
     fun findPair(x: Double): Pair<Double, Double>? {
         if (pairs.isEmpty()) throw IllegalStateException()
-        var min = Double.MAX_VALUE
-        for ((first) in pairs)
-            when {
-                abs(x - first) < abs(min - x) -> min = first
-                abs(x - first) == abs(min - x) && first < min -> min = first
-            }
-        return Pair(min, pairs[min]!!)
+        val left = pairs.floorEntry(x) ?: null
+        val right = pairs.ceilingEntry(x) ?: null
+        return when {
+            left == null -> right?.toPair()
+            right == null -> left.toPair()
+            (x - left.toPair().first <= right.toPair().first - x) -> left.toPair()
+            else -> right.toPair()
+        }
     }
 
     /**
@@ -81,18 +80,18 @@ class TableFunction {
             pairs.size == 1 -> return pairs.values.first()
             pairs[x] != null -> return pairs[x]!!
         }
-        val left = pairs.floorKey(x)
-        val right = pairs.ceilingKey(x)
+        val left = pairs.floorEntry(x)
+        val right = pairs.ceilingEntry(x)
         return when {
             left != null && right != null ->
-                pairs[left]!! + (x - left) * (pairs[right]!! - pairs[left]!!) / (right - left)
+                left.value + (x - left.key) * (right.value - left.value) / (right.key - left.key)
             left == null -> {
-                val right1 = pairs.higherKey(right)
-                pairs[right]!! + (x - right) * (pairs[right1]!! - pairs[right]!!) / (right1 - right)
+                val right1 = pairs.higherEntry(right.key)
+                right.value + (x - right.key) * (right1.value - right.value) / (right1.key - right.key)
             }
             else -> {
-                val left1 = pairs.lowerKey(left)
-                pairs[left1]!! + (x - left1) * (pairs[left]!! - pairs[left1]!!) / (left - left1)
+                val left1 = pairs.lowerEntry(left.key)
+                left1.value + (x - left1.key) * (left.value - left1.value) / (left.key - left1.key)
             }
         }
     }
@@ -102,8 +101,7 @@ class TableFunction {
      * и любая пара из второй таблицы входит также и в первую
      */
     override fun equals(other: Any?): Boolean =
-        this === other || other is TableFunction && other.pairs.size == pairs.size
-                && pairs.toList().all { it in other.pairs.toList() }
+        this === other || other is TableFunction && this.pairs == other.pairs
 
     override fun hashCode(): Int = pairs.hashCode()
 
