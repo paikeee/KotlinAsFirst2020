@@ -29,20 +29,13 @@ class TableFunction {
      * Вернуть true, если пары с заданным x ещё нет,
      * или false, если она уже есть (в этом случае перезаписать значение y)
      */
-    fun add(x: Double, y: Double): Boolean {
-        pairs.putIfAbsent(x, y) ?: return true
-        return false
-    }
+    fun add(x: Double, y: Double): Boolean = pairs.putIfAbsent(x, y) == null
 
     /**
      * Удалить пару с заданным значением x.
      * Вернуть true, если пара была удалена.
      */
-    fun remove(x: Double): Boolean {
-        pairs.remove(x) ?: return false
-        return true
-    }
-
+    fun remove(x: Double): Boolean = pairs.remove(x) != null
 
     /**
      * Вернуть коллекцию из всех пар в таблице
@@ -56,8 +49,8 @@ class TableFunction {
      */
     fun findPair(x: Double): Pair<Double, Double>? {
         if (pairs.isEmpty()) throw IllegalStateException()
-        val left = pairs.floorEntry(x) ?: null
-        val right = pairs.ceilingEntry(x) ?: null
+        val left = pairs.floorEntry(x)
+        val right = pairs.ceilingEntry(x)
         return when {
             left == null -> right?.toPair()
             right == null -> left.toPair()
